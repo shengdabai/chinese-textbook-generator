@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Generated output
+output/
+*.pdf
+*.epub
+
+# macOS
+.DS_Store
+
+# Editor
+.omc/
+.idea/
+.vscode/
+*.swp
+
+# Secrets (never commit these)
+.env
+*.env
+secrets.py
+
+# Data files (HSK merged markdown files are large, generated)
+v2-weasyprint/词汇数据/
+v2-weasyprint/HSK备考/
+v3-typst/content*/
