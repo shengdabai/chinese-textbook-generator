@@ -1,0 +1,171 @@
+# Content Filtering Configuration
+# Strict teaching-safe settings for Z Turns Chinese.
+
+FILTERS:
+  name_sanitization: true
+  organization_sanitization: true
+  topic_filtering: true
+  custom_rules: true
+
+STRICT_MODE: true
+ABORT_ON_BLOCKED_CONTENT: false
+BLOCKED_CONTENT_PLACEHOLDER: "[FILTERED]"
+
+DEFAULT_AUTHOR: "Tony Sheng"
+COPYRIGHT_HOLDER: "Z Turns Inc."
+COPYRIGHT_NOTICE: "Copyright © 2026 Z Turns Inc. All rights reserved. Author: Tony Sheng"
+COMPANY_WEBSITE: "zturnsgo.com"
+
+# Real names that must never appear in generated materials.
+NAMES_REPLACE:
+  "盛长春": "Tony Sheng"
+  "Sheng Changchun": "Tony Sheng"
+  "盛长": "Tony Sheng"
+
+# Formal organization suffixes and legal entity markers.
+ORG_SUFFIXES:
+  - "有限公司"
+  - "责任公司"
+  - "股份公司"
+  - "集团公司"
+  - "株式会社"
+  - "Co\\.,? Ltd\\.?"
+  - "Inc\\.?"
+  - "Corp\\.?"
+  - "LLC"
+
+# Well-known brands / institutions that should be sanitized directly.
+ORG_NAMES_REPLACE:
+  "Google": "[ORGANIZATION]"
+  "Apple": "[ORGANIZATION]"
+  "Amazon": "[ORGANIZATION]"
+  "Meta": "[ORGANIZATION]"
+  "OpenAI": "[ORGANIZATION]"
+  "TikTok": "[ORGANIZATION]"
+  "Douyin": "[ORGANIZATION]"
+  "Bilibili": "[ORGANIZATION]"
+  "Tencent": "[ORGANIZATION]"
+  "Alibaba": "[ORGANIZATION]"
+  "ByteDance": "[ORGANIZATION]"
+  "Huawei": "[ORGANIZATION]"
+  "Baidu": "[ORGANIZATION]"
+  "谷歌": "[ORGANIZATION]"
+  "苹果": "[ORGANIZATION]"
+  "亚马逊": "[ORGANIZATION]"
+  "腾讯": "[ORGANIZATION]"
+  "阿里巴巴": "[ORGANIZATION]"
+  "字节跳动": "[ORGANIZATION]"
+  "华为": "[ORGANIZATION]"
+  "百度": "[ORGANIZATION]"
+  "小红书": "[ORGANIZATION]"
+  "抖音": "[ORGANIZATION]"
+  "微信": "[ORGANIZATION]"
+  "微博": "[ORGANIZATION]"
+  "哔哩哔哩": "[ORGANIZATION]"
+
+# High-level categories for reporting.
+BLOCKED_TOPICS:
+  - "政治内容"
+  - "宗教内容"
+  - "婚恋关系"
+  - "职位与工作"
+  - "公司与品牌"
+  - "迷信命理"
+
+# Exact keywords that should be flagged and sanitized.
+BLOCKED_KEYWORDS:
+  - "政治"
+  - "政策"
+  - "政府"
+  - "体制"
+  - "外交"
+  - "宣传"
+  - "民主"
+  - "选举"
+  - "抗议"
+  - "共产党"
+  - "台独"
+  - "港独"
+  - "藏独"
+  - "法轮功"
+  - "宗教"
+  - "信仰"
+  - "佛教"
+  - "道教"
+  - "基督教"
+  - "天主教"
+  - "伊斯兰"
+  - "清真"
+  - "寺庙"
+  - "教堂"
+  - "恋爱"
+  - "约会"
+  - "婚姻"
+  - "结婚"
+  - "离婚"
+  - "相亲"
+  - "性关系"
+  - "男朋友"
+  - "女朋友"
+  - "夫妻"
+  - "彩礼"
+  - "风水"
+  - "算命"
+  - "命理"
+  - "八字"
+  - "生肖"
+  - "职位"
+  - "岗位"
+  - "职业"
+  - "就业"
+  - "招聘"
+  - "面试"
+  - "简历"
+  - "薪资"
+  - "工资"
+  - "升职"
+  - "裁员"
+
+# Additional replacement rules for teaching-safe output.
+CUSTOM_REGEX:
+  - pattern: "1[3-9]\\d{9}"
+    replacement: "[PHONE_NUMBER]"
+    tag: "联系方式"
+    enabled: true
+  - pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+    replacement: "[EMAIL]"
+    tag: "联系方式"
+    enabled: true
+  - pattern: "\\d{17}[\\dXx]"
+    replacement: "[ID_NUMBER]"
+    tag: "身份信息"
+    enabled: true
+  - pattern: "(总监|经理|主任|主管|高管|老板|工程师|律师|医生|记者|翻译|顾问|教授|总裁|CEO|CFO|COO|CTO|founder|manager|director|engineer|lawyer|doctor|journalist|translator|consultant|executive)"
+    replacement: "[ROLE]"
+    tag: "职位与身份"
+    enabled: true
+    ignore_case: true
+  - pattern: "(工作|职位|岗位|职业|就业|招聘|面试|简历|薪资|工资|升职|跳槽|裁员|绩效|加班|实习|劳动合同)"
+    replacement: "[WORK]"
+    tag: "工作与职场"
+    enabled: true
+  - pattern: "(?<!\\])(公司|企业|集团|品牌|商会|工作室|事务所)"
+    replacement: "[ORGANIZATION]"
+    tag: "公司与机构"
+    enabled: true
+  - pattern: "(恋爱|约会|婚姻|结婚|离婚|相亲|男朋友|女朋友|夫妻|婆媳|丈母娘|彩礼|性关系|同居|婚礼|新郎|新娘)"
+    replacement: "[RELATIONSHIP]"
+    tag: "婚恋关系"
+    enabled: true
+  - pattern: "(宗教|信仰|佛教|道教|基督教|天主教|伊斯兰|清真|寺庙|教堂|法轮功|无神论)"
+    replacement: "[RELIGION]"
+    tag: "宗教内容"
+    enabled: true
+  - pattern: "(政治|政策|政府|体制|外交|地缘政治|领导人|共产党|民主|选举|抗议|台独|港独|藏独)"
+    replacement: "[POLITICS]"
+    tag: "政治内容"
+    enabled: true
+  - pattern: "(风水|算命|命理|八字|生肖|改运|面相)"
+    replacement: "[BELIEF]"
+    tag: "迷信命理"
+    enabled: true
