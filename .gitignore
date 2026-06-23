@@ -24,25 +24,26 @@ output/
 
 # Secrets (never commit these)
 .env
-*.env
-secrets.py
-
-# Data files (HSK merged markdown files are large, generated)
-v2-weasyprint/词汇数据/
-v2-weasyprint/HSK备考/
-v3-typst/content*/
-# Codex governance: local secrets and machine state
-.env
 .env.*
 !.env.example
 !.env.*.example
+*.env
+secrets.py
 *.pem
 *.p12
 *.pfx
 id_rsa
 id_dsa
 .npmrc
-.DS_Store
-.omc/
+
+# Codex governance: local machine state
 .codex/
 .claude/local/
+
+# Data files (HSK merged markdown files are large, generated)
+v2-weasyprint/词汇数据/
+v2-weasyprint/HSK备考/
+v3-typst/content*/
+
+# Empty placeholder / legacy files
+v2-weasyprint/grammar_raw.txt

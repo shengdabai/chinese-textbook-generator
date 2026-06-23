@@ -1,0 +1,4 @@
+fpdf2>=2.7.0
+anthropic>=0.20.0
+jieba>=0.42.1
+pypinyin>=0.50.0
