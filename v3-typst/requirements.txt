@@ -3,5 +3,6 @@ mistune==3.0.2
 packaging==26.1
 pluggy==1.6.0
 Pygments==2.20.0
+pypinyin==0.55.0
 pytest==9.0.3
 PyYAML==6.0.3

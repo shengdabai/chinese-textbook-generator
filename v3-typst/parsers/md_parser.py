@@ -26,6 +26,24 @@ class MarkdownParser:
     """Parse Markdown text into a list of AST node dicts."""
 
     def parse(self, text: str) -> list[dict]:
+        """Parse ``text`` into a list of node dicts.
+
+        Vocabulary tables (a pipe table whose header mentions "Pinyin") become
+        ``NodeType.VOCAB_TABLE`` nodes. Their ``rows`` always hold full
+        7-tuples ``(hanzi, pinyin, pos, meaning, ex_zh, ex_pinyin, ex_en)``;
+        a column the source table does not have is an empty string, and
+        trailing empty cells are not trimmed, because
+        ``TypstRenderer`` unpacks all seven fields:
+
+        - 7+ columns: the cells in order (``ex_en`` is ``""`` if missing).
+        - 6 columns: ``ex_pinyin`` is ``""``.
+        - fewer columns (or a row with fewer than 6 cells): ``pos`` is the
+          third cell, ``meaning`` is the last cell, and the three example
+          fields are ``""``. Rows with fewer than 3 cells are skipped.
+
+        ``has_examples`` (6+ header columns) and ``has_pinyin_example``
+        (7+ header columns) tell the renderer which layout to use.
+        """
         nodes: list[dict] = []
         lines = text.splitlines()
         i = 0

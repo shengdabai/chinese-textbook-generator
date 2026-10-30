@@ -4,6 +4,10 @@ from parsers.md_parser import NodeType
 
 
 class TypstRenderer:
+    # render() sets this per call; the default lets render_node() be used on
+    # its own (no pinyin annotation), as the tests do.
+    _annotate: bool = False
+
     def render(self, nodes: list[dict], annotate: bool = False) -> str:
         self._annotate = annotate
         return "".join(self.render_node(n) for n in nodes)
