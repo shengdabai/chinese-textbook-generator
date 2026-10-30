@@ -28,8 +28,8 @@ Usage:
 """
 
 import argparse
-import sys
 import os
+import sys
 
 # Add project dir to path
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -400,8 +400,8 @@ def handle_extract(args):
 
 def handle_offline(args):
     """Handle the 'offline' command - Pre-built content generation."""
-    from pdf_builder import download_fonts
     from generator import LessonGenerator
+    from pdf_builder import download_fonts
 
     print("[Setup] Checking fonts...")
     download_fonts()
@@ -473,9 +473,9 @@ def handle_status():
         pdfs = [f for f in os.listdir(output_dir) if f.endswith(".pdf")]
         print(f"  Generated PDFs:    {len(pdfs)} files")
     else:
-        print(f"  Generated PDFs:    0 files")
+        print("  Generated PDFs:    0 files")
 
-    print(f"\n=== Quick Start ===\n")
+    print("\n=== Quick Start ===\n")
     if api_key:
         print("  python3 main.py mission \"Create a pinyin course\"   # AI Commander")
         print("  python3 main.py generate --topic \"food\" --hsk 1    # Single topic")
@@ -490,7 +490,7 @@ def handle_status():
 
 def show_info():
     """Display system configuration and curriculum info."""
-    from config import HSK_LEVELS, BOOK1_LESSONS, CONSISTENCY_RULES, FOUR_LAYERS
+    from config import BOOK1_LESSONS, CONSISTENCY_RULES, FOUR_LAYERS, HSK_LEVELS
     from lesson_data import get_available_lessons
 
     print("=== System Configuration ===\n")
@@ -511,7 +511,7 @@ def show_info():
     for lesson in BOOK1_LESSONS:
         print(f"  L{lesson['id']:<3} {lesson['title_en']:<30} {lesson['topic']:<15} {lesson['new_words']:<10} {lesson['grammar']}")
 
-    print(f"\n\nConsistency Rules:")
+    print("\n\nConsistency Rules:")
     for key, val in CONSISTENCY_RULES.items():
         print(f"  {key}: {val}")
 

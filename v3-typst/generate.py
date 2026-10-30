@@ -130,7 +130,8 @@ def build_hsk_typ(level: str, title: str) -> str:
 
 def compile_typ(typ_src: str, out_pdf: Path, tmp_name: str = "_build_tmp.typ") -> bool:
     """写入临时 .typ 文件到 templates/ 并编译，返回是否成功。"""
-    import tempfile, os
+    import os
+    import tempfile
     # Use a unique temp file per call to avoid race conditions in parallel builds
     fd, tmp_path = tempfile.mkstemp(suffix=".typ", dir=TEMPLATES)
     try:
@@ -157,7 +158,7 @@ def cmd_hsk(args):
     typ_src = build_hsk_typ(level, title)
 
     out_pdf = OUTPUT / f"ZTurns_HSK{level}_Prep.pdf"
-    print(f"编译中...")
+    print("编译中...")
     if compile_typ(typ_src, out_pdf):
         print(f"✓ 生成成功: {out_pdf}")
         # 同时复制到 HSK考试指南 目录
@@ -166,7 +167,7 @@ def cmd_hsk(args):
         dest.write_bytes(out_pdf.read_bytes())
         print(f"✓ 已复制到: {dest}")
     else:
-        print(f"✗ 编译失败")
+        print("✗ 编译失败")
         sys.exit(1)
 
 
@@ -233,7 +234,7 @@ def cmd_validate(args):
     if compile_typ(typ_src, out_pdf, "_validate_tmp.typ"):
         print(f"✓ 编译成功: {out_pdf}")
     else:
-        print(f"✗ 编译失败")
+        print("✗ 编译失败")
         sys.exit(1)
 
 

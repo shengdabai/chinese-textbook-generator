@@ -6,7 +6,6 @@ English text renders correctly via system fonts; Chinese via CJK fonts.
 """
 
 import html
-import os
 import re
 import sys
 from pathlib import Path
@@ -992,7 +991,7 @@ BOOKS = {
 # ─────────────────────────────────────────────
 class Block:
     """Parsed content block."""
-    __slots__ = ("kind", "data")
+    __slots__ = ("data", "kind")
 
     def __init__(self, kind, data):
         self.kind = kind  # h1 h2 h3 four_layer table paragraph rule bullet numbered
@@ -1883,7 +1882,6 @@ def render_blocks_html(blocks: list) -> str:
 
 
 def build_cover_html(meta: dict) -> str:
-    color = meta["color"]
     title = html.escape(meta["title"])
     subtitle = html.escape(meta["subtitle"])
     zh_title = html.escape(meta["zh_title"])
@@ -1954,18 +1952,18 @@ def build_part_html(part_name: str) -> str:
 
 
 def build_front_matter_html() -> str:
-    return """
+    return f"""
 <div class="front-matter">
   <div class="front-content">
-    <div class="front-logo">{series_name}</div>
+    <div class="front-logo">{html.escape(SERIES_NAME)}</div>
     <hr class="front-rule">
     <div class="front-en">Learn real conversational Chinese through our four-layer translation method.</div>
     <div class="front-zh">通过四层逐字翻译法学习真实的中国日常对话。</div>
     <hr class="front-rule">
-    <div class="front-website">{website}</div>
+    <div class="front-website">{html.escape(COMPANY_WEBSITE)}</div>
   </div>
 </div>
-""".format(series_name=html.escape(SERIES_NAME), website=html.escape(COMPANY_WEBSITE))
+"""
 
 
 def build_copyright_html(meta: dict) -> str:
@@ -1984,7 +1982,7 @@ def build_copyright_html(meta: dict) -> str:
 
 
 def build_back_matter_html() -> str:
-    return """
+    return f"""
 <div class="back-matter">
   <div class="back-band">
     <div class="back-title">Thank You for Learning with Us</div>
@@ -1993,10 +1991,10 @@ def build_back_matter_html() -> str:
       Keep practicing. Real fluency comes from real conversations.<br>
       <span class="zh">继续练习。真正的流利来自真实的对话。</span>
     </div>
-    <div class="back-website">{website}</div>
+    <div class="back-website">{html.escape(COMPANY_WEBSITE)}</div>
   </div>
 </div>
-""".format(website=html.escape(COMPANY_WEBSITE))
+"""
 
 
 def build_full_html(book_key: str, meta: dict, content_html: str, toc_entries: list) -> str:

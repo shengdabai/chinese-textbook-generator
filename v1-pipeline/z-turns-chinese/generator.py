@@ -12,10 +12,10 @@ Synthesized from all 6 AI proposals:
 """
 
 import os
+
+from config import BOOK1_LESSONS, CONSISTENCY_RULES
+from lesson_data import get_available_lessons, get_lesson
 from pdf_builder import ChinesePDF, download_fonts
-from lesson_data import get_lesson, get_available_lessons, LESSONS
-from hsk_vocab import get_vocab_for_lesson
-from config import BOOK1_LESSONS, HSK_LEVELS, CONSISTENCY_RULES
 
 
 class LessonGenerator:
@@ -57,7 +57,7 @@ class LessonGenerator:
         pdf.add_vocabulary_section(lesson["new_words"])
 
         # 4. Review words (if any)
-        if "review_words" in lesson and lesson["review_words"]:
+        if lesson.get("review_words"):
             pdf.add_review_words(lesson["review_words"])
 
         # 5. Dialogues with four-layer alignment
@@ -331,10 +331,6 @@ class LessonGenerator:
         max_words = CONSISTENCY_RULES["max_new_words_regular"]
         if lesson.get("new_words") and len(lesson["new_words"]) > max_words:
             issues.append(f"WARNING: {len(lesson['new_words'])} new words exceeds limit of {max_words}")
-
-        # Check HSK level compliance
-        hsk = lesson.get("hsk_level", 1)
-        hsk_info = HSK_LEVELS.get(hsk, {})
 
         if issues:
             print(f"\n=== QA Report for Lesson {lesson['id']} ===")

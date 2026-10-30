@@ -16,17 +16,12 @@ Usage:
 import argparse
 import os
 import sys
-import json
-import time
-from datetime import datetime
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_DIR)
 
+from book_template import BookTemplate
 from methodology import BOOK_SERIES, METHODOLOGY
-from book_template import BookTemplate, validate_chapter
-from config import HSK_LEVELS, BOOK1_LESSONS
-
 
 BANNER = """
   ╔══════════════════════════════════════════════════════════╗
@@ -188,7 +183,7 @@ def handle_validate(book_num: int):
 # Book generation
 # ============================================================
 
-def handle_generate_book(book_num: int, chapters_arg: str, output_dir: str = None):
+def handle_generate_book(book_num: int, chapters_arg: str, output_dir: str | None = None):
     """Generate PDF chapters for a book."""
     book_key = f"book{book_num}"
 
@@ -207,9 +202,9 @@ def handle_generate_book(book_num: int, chapters_arg: str, output_dir: str = Non
     print(f"    Output:   {output_dir}\n")
 
     try:
-        from pdf_builder import download_fonts
         from generator import LessonGenerator
         from lesson_data import LESSONS, get_available_lessons
+        from pdf_builder import download_fonts
     except ImportError as e:
         print(f"  [!] Import error: {e}")
         sys.exit(1)
@@ -248,7 +243,7 @@ def handle_generate_book(book_num: int, chapters_arg: str, output_dir: str = Non
     return generated
 
 
-def handle_generate_complete_book(book_num: int, output_dir: str = None):
+def handle_generate_complete_book(book_num: int, output_dir: str | None = None):
     """Generate a merged complete book PDF."""
     book_key = f"book{book_num}"
     template = BookTemplate(book_key)
@@ -259,8 +254,8 @@ def handle_generate_complete_book(book_num: int, output_dir: str = None):
     print(f"=== Generating Complete {template.name} PDF ===\n")
 
     try:
-        from pdf_builder import download_fonts
         from generator import LessonGenerator
+        from pdf_builder import download_fonts
     except ImportError as e:
         print(f"  [!] Import error: {e}")
         sys.exit(1)
@@ -286,7 +281,7 @@ def handle_generate_complete_book(book_num: int, output_dir: str = None):
 # GetNotes-based generation
 # ============================================================
 
-def handle_from_getnotes(book_num: int, topic: str, output_dir: str = None):
+def handle_from_getnotes(book_num: int, topic: str, output_dir: str | None = None):
     """Generate lessons by pulling content from GetNotes."""
     book_key = f"book{book_num}"
     template = BookTemplate(book_key)

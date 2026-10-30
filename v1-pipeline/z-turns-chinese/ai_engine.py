@@ -5,11 +5,10 @@ Falls back to direct HTTP calls if the anthropic SDK is not installed.
 """
 
 import json
-import os
 import logging
-from typing import Optional
+import os
 
-from config import HSK_LEVELS, CONSISTENCY_RULES, LESSON_STRUCTURE, FOUR_LAYERS
+from config import CONSISTENCY_RULES, HSK_LEVELS, LESSON_STRUCTURE
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ def _call_anthropic(system_prompt: str, user_prompt: str, *, max_tokens: int = 8
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not api_key:
-        raise EnvironmentError(
+        raise OSError(
             "ANTHROPIC_API_KEY environment variable is not set. "
             "Please set it to your Anthropic API key before using the AI engine."
         )
@@ -301,7 +300,7 @@ class AIEngine:
         topic: str,
         hsk_level: int,
         lesson_num: int,
-        previous_vocab: Optional[list] = None,
+        previous_vocab: list | None = None,
         context_notes: str = "",
     ) -> dict:
         """Generate a complete lesson dict matching lesson_data.py format.
@@ -366,7 +365,7 @@ Return the lesson as a single JSON object matching the schema in your instructio
             lesson = _extract_json(raw)
             lesson = self._normalize_lesson(lesson)
             return lesson
-        except EnvironmentError:
+        except OSError:
             raise
         except Exception as e:
             logger.error("Failed to generate lesson: %s", e, exc_info=True)
@@ -425,7 +424,7 @@ Return a JSON array of {num_lessons} lesson plan objects."""
             if not isinstance(plans, list):
                 raise ValueError("Expected a JSON array of lesson plans")
             return plans
-        except EnvironmentError:
+        except OSError:
             raise
         except Exception as e:
             logger.error("Failed to generate course plan: %s", e, exc_info=True)
@@ -457,7 +456,7 @@ Return a JSON object with your analysis."""
         try:
             raw = _call_anthropic(MARKET_ANALYSIS_SYSTEM_PROMPT, user_prompt, max_tokens=2048)
             return _extract_json(raw)
-        except EnvironmentError:
+        except OSError:
             raise
         except Exception as e:
             logger.error("Failed to analyze market demand: %s", e, exc_info=True)
@@ -508,7 +507,7 @@ Return a JSON object with your extraction."""
         try:
             raw = _call_anthropic(MATERIAL_SYSTEM_PROMPT, user_prompt, max_tokens=4096)
             return _extract_json(raw)
-        except EnvironmentError:
+        except OSError:
             raise
         except Exception as e:
             logger.error("Failed to process raw material: %s", e, exc_info=True)
@@ -563,7 +562,7 @@ Return the improved lesson as a single JSON object matching the schema."""
             lesson = _extract_json(raw)
             lesson = self._normalize_lesson(lesson)
             return lesson
-        except EnvironmentError:
+        except OSError:
             raise
         except Exception as e:
             logger.error("Failed to improve lesson: %s", e, exc_info=True)

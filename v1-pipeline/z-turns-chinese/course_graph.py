@@ -6,11 +6,9 @@ Manages courses, units, and lessons with cross-course vocabulary sharing.
 import json
 import os
 import uuid
-from dataclasses import dataclass, field, asdict
-from typing import Optional
+from dataclasses import asdict, dataclass, field
 
-from config import HSK_LEVELS, BOOK1_LESSONS
-from vocab_ledger import VocabLedger
+from config import BOOK1_LESSONS
 
 
 @dataclass
@@ -62,7 +60,7 @@ LEVEL_MAPPING = {
 class CourseGraph:
     """Multi-track course structure manager."""
 
-    def __init__(self, data_dir: Optional[str] = None):
+    def __init__(self, data_dir: str | None = None):
         if data_dir is None:
             data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
         self.data_dir = data_dir
@@ -399,7 +397,7 @@ def demo():
     if general:
         cid = general[0]["course_id"]
         structure = graph.get_course_structure(cid)
-        print(f"\n[3] General Chinese structure:")
+        print("\n[3] General Chinese structure:")
         for unit in structure.get("units", []):
             print(f"    Unit: {unit['title']}")
             for les in unit.get("lessons", []):
@@ -415,7 +413,7 @@ def demo():
 
     # Level mapping
     mapping = CourseGraph.get_level_mapping()
-    print(f"\n[5] Level mapping (HSK -> CEFR -> ACTFL):")
+    print("\n[5] Level mapping (HSK -> CEFR -> ACTFL):")
     for lvl, m in list(mapping.items())[:3]:
         print(f"    {m['hsk']}: {m['cefr']} / {m['actfl']}")
 

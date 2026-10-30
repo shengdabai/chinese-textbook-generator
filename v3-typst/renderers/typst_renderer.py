@@ -1,6 +1,8 @@
 import re
-from pypinyin import pinyin as get_pinyin, Style
+
 from parsers.md_parser import NodeType
+from pypinyin import Style
+from pypinyin import pinyin as get_pinyin
 
 
 class TypstRenderer:

@@ -2,7 +2,9 @@
 """把大 appendix 文件按子表格拆分，每段派给 Claude 子进程处理后合并。
 用法: python process_appendix.py <file> <level>
 """
-import re, sys, subprocess, tempfile, os
+import re
+import subprocess
+import sys
 from pathlib import Path
 
 SEP_RE = re.compile(r"^[\|\-\s:]+$")

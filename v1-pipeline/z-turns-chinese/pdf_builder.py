@@ -11,8 +11,9 @@ Synthesized from:
 
 import os
 import unicodedata
+
+from config import PDF_STYLE
 from fpdf import FPDF
-from config import PDF_STYLE, FOUR_LAYERS
 
 
 class ChinesePDF(FPDF):
@@ -31,7 +32,6 @@ class ChinesePDF(FPDF):
 
     def _setup_fonts(self):
         """Register fonts including CJK support using system fonts."""
-        import platform
         # Primary: Use Arial Unicode (supports Latin + CJK)
         unicode_font_paths = [
             # macOS
@@ -126,7 +126,6 @@ class ChinesePDF(FPDF):
 
     def add_title_page(self, book_name, lesson_num, title_en, title_zh, hsk_level):
         """Create a beautiful title page for the lesson (no header)."""
-        saved_lesson = self.current_lesson
         self.current_lesson = ""
         self.add_page()
         self.current_lesson = f"Lesson {lesson_num}"
@@ -812,7 +811,6 @@ class ChinesePDF(FPDF):
         self.ln(8)
 
         # Sort by pinyin (strip tone marks for sorting, use lowercase)
-        import unicodedata
 
         def sort_key(word):
             """Generate sort key from pinyin, stripping diacritics."""

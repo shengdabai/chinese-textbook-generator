@@ -4,11 +4,10 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from pypinyin import Style, pinyin
-
 
 ROOT = Path(".")
 GENERATE = ROOT / "generate.py"

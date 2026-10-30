@@ -23,32 +23,29 @@ Usage:
     python3 ai_commander.py --offline           # Offline demo with built-in data
 """
 
-import os
-import sys
 import json
-import time
+import os
 import re
+import sys
 from datetime import datetime
 
 # Ensure project directory is on the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
-    HSK_LEVELS,
     BOOK1_LESSONS,
     CONSISTENCY_RULES,
+    HSK_LEVELS,
     LESSON_STRUCTURE,
-    FOUR_LAYERS,
 )
-from lesson_data import LESSONS, get_lesson, get_available_lessons
+from generator import LessonGenerator
 from hsk_vocab import (
     VOCAB_BY_TOPIC,
-    get_vocab_for_lesson,
-    get_all_vocab_up_to_lesson,
     check_vocab_in_hsk,
+    get_vocab_for_lesson,
 )
+from lesson_data import LESSONS, get_available_lessons, get_lesson
 from privacy_filter import PrivacyFilter
-from generator import LessonGenerator
 
 try:
     from qa_engine import QAEngine
@@ -359,7 +356,7 @@ class AICommander:
         self.state["completed_stages"].append(STAGE_PARSE)
         self._log_action(STAGE_PARSE, json.dumps(params, ensure_ascii=False))
 
-        print(f"  解析结果 / Parsed parameters:")
+        print("  解析结果 / Parsed parameters:")
         print(f"    主题 / Theme     : {params['theme']}")
         print(f"    HSK 等级 / Level : {params['hsk_level']}")
         print(f"    课数 / Lessons   : {params['num_lessons']}")
@@ -486,8 +483,8 @@ class AICommander:
         theme: str,
         hsk_level: int = 1,
         num_lessons: int = 15,
-        sources: list = None,
-        requirements: list = None,
+        sources: list | None = None,
+        requirements: list | None = None,
     ):
         """Execute the full generation pipeline.
 
@@ -704,7 +701,7 @@ class AICommander:
 
         return plan
 
-    def gather_materials(self, theme: str, sources: list = None) -> list:
+    def gather_materials(self, theme: str, sources: list | None = None) -> list:
         """Stage 4: Gather materials from all available sources.
 
         Returns a list of material dicts: {"source", "type", "content"}.
@@ -829,7 +826,6 @@ class AICommander:
                 content = self.privacy_filter.anonymize(content)
             clean.append({**mat, "content": content})
 
-        report = self.privacy_filter.get_report()
         print(f"  扫描结果 / Scan results: {total_findings} PII items found & cleaned")
         self._log_action(STAGE_PRIVACY, f"{total_findings} findings anonymized")
         return clean
@@ -851,14 +847,14 @@ class AICommander:
             # Try to use existing lesson data first
             existing = get_lesson(lid)
             if existing:
-                print(f"         使用内置数据 / Using built-in data")
+                print("         使用内置数据 / Using built-in data")
                 lessons.append(existing)
                 continue
 
             # Try AI generation
             if self.ai_engine is not None:
                 try:
-                    print(f"         AI 生成中 / AI generating...")
+                    print("         AI 生成中 / AI generating...")
                     topic = item.get("topic", item.get("title_en", "general"))
                     lesson_num = item.get("lesson_num", lid)
                     prev_vocab = []
@@ -909,7 +905,7 @@ class AICommander:
                     self.state["errors"].append(f"AI generation failed for L{lid}: {exc}")
 
             # Offline fallback: build a skeleton lesson from vocab data
-            print(f"         离线骨架 / Offline skeleton")
+            print("         离线骨架 / Offline skeleton")
             skeleton = self._build_skeleton_lesson(item, hsk_level)
 
             # VocabLedger: register words even for skeleton lessons
@@ -1052,7 +1048,6 @@ class AICommander:
         for idx, lesson in enumerate(lessons):
             lid = lesson.get("id", idx + 1)
             hsk = lesson.get("hsk_level", 1)
-            hsk_info = HSK_LEVELS.get(hsk, HSK_LEVELS[1])
             is_review = lesson.get("title_en", "").lower().startswith("review") or \
                         lesson.get("title_zh", "").startswith("复习") or \
                         lesson.get("title_zh", "").startswith("总复习")
@@ -1314,7 +1309,7 @@ class AICommander:
 
             else:
                 # Treat unknown input as a mission brief
-                print(f"  未知命令，尝试作为任务执行... / Unknown command, trying as mission...")
+                print("  未知命令，尝试作为任务执行... / Unknown command, trying as mission...")
                 self.execute_mission(raw)
 
     # ------------------------------------------------------------------

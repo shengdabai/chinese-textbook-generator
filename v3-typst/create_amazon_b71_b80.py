@@ -11,12 +11,10 @@ from __future__ import annotations
 
 import re
 import subprocess
-import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 
 from pypinyin import Style, pinyin
-
 
 BASE_DIR = Path("../..")
 V3_DIR = BASE_DIR / "生成工具" / "v3-typst"
@@ -1460,9 +1458,9 @@ def build_book_md(book: Book) -> str:
     lines = [
         f"# Z Turns Chinese Amazon Series Book {book.number}",
         f"## {book.title}",
-        f"**Author:** Tony Sheng",
-        f"**Website:** zturnsgo.com",
-        f"**Teaching Experience:** 3000+ hours of real Chinese teaching",
+        "**Author:** Tony Sheng",
+        "**Website:** zturnsgo.com",
+        "**Teaching Experience:** 3000+ hours of real Chinese teaching",
         f"**Target Learner:** {book.audience}",
         f"**Book Promise:** {book.promise}",
         f"**Knowledge Base Notes:** {', '.join(book.source_notes)}",

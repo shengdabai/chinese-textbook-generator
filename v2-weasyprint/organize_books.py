@@ -4,7 +4,6 @@ Organize Z Turns Chinese ebooks into final-books/ directory.
 Merges chapters and copies PDFs.
 """
 
-import os
 import shutil
 from pathlib import Path
 
