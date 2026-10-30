@@ -47,3 +47,6 @@ v3-typst/content*/
 
 # Empty placeholder / legacy files
 v2-weasyprint/grammar_raw.txt
+
+# Leftover git stubs from upgrade runs
+.git.broken-stub-*/
