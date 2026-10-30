@@ -20,7 +20,10 @@ def test_parse_vocab_table():
     nodes = p.parse(md)
     tables = [n for n in nodes if n["type"] == NodeType.VOCAB_TABLE]
     assert len(tables) == 1
-    assert tables[0]["rows"][0] == ("学", "xué", "learn")
+    assert tables[0]["has_examples"] is False
+    assert tables[0]["has_pinyin_example"] is False
+    # Rows are always full 7-tuples; see MarkdownParser.parse.
+    assert tables[0]["rows"][0] == ("学", "xué", "verb", "learn", "", "", "")
 
 
 def test_parse_regular_table():

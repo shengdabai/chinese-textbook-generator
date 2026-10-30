@@ -31,7 +31,8 @@ def test_vocab_table():
     r = make_renderer()
     node = {
         "type": NodeType.VOCAB_TABLE,
-        "rows": [("学习", "xué xí", "study")],
+        # Same 7-tuple shape that MarkdownParser produces.
+        "rows": [("学习", "xué xí", "verb", "study", "", "", "")],
     }
     result = r.render_node(node)
     assert "#vocab-table" in result

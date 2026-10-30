@@ -38,14 +38,6 @@ jobs:
       - name: Install v3-typst test dependencies
         run: python -m pip install -r v3-typst/requirements.txt
 
-      # Left out until fixed on main:
-      # - tests/test_typst_renderer.py imports pypinyin, which is not in
-      #   v3-typst/requirements.txt (ModuleNotFoundError at collection).
-      # - tests/test_md_parser.py::test_parse_vocab_table expects 3-column
-      #   rows but the parser returns the extra columns as well.
       - name: v3-typst pytest
         working-directory: v3-typst
-        run: >-
-          python -m pytest -q
-          --ignore=tests/test_typst_renderer.py
-          --deselect tests/test_md_parser.py::test_parse_vocab_table
+        run: python -m pytest -q
