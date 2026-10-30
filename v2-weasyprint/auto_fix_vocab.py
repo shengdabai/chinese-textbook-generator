@@ -6,7 +6,6 @@ For each chapter with <16 vocab rows, adds rows with topic-appropriate vocabular
 
 import glob
 import os
-import re
 
 # Pre-built vocabulary banks per book theme
 VOCAB_BANKS = {
@@ -661,13 +660,15 @@ def process_book(book_name, bank):
     files = sorted(glob.glob(f'{base}/part*/ch*.md'))
     fixed = 0
     for f in files:
-        content = open(f, encoding='utf-8').read()
+        with open(f, encoding='utf-8') as fh:
+            content = fh.read()
         count = count_vocab_rows(content)
         if 0 <= count < 16:
             needed = 16 - count
             if add_vocab_rows(f, needed, bank):
                 # Verify
-                new_count = count_vocab_rows(open(f, encoding='utf-8').read())
+                with open(f, encoding='utf-8') as fh:
+                    new_count = count_vocab_rows(fh.read())
                 fixed += 1
                 print(f'  {os.path.basename(f)}: {count} → {new_count}')
             else:

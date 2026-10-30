@@ -7,7 +7,6 @@ from pathlib import Path
 
 from pypinyin import Style, pinyin
 
-
 ROOT = Path(".")
 DEST_ROOT = Path("../../output")
 PLAN_PATH = DEST_ROOT / "BOOKS_71_TO_80_CONFIDENT_SPEAKING_PLAN.md"

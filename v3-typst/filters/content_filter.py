@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+
 import yaml
 
 from .rules.base_rule import Replacement
+from .rules.keyword_rule import KeywordRule
 from .rules.name_rule import NameRule
 from .rules.org_rule import OrgRule
 from .rules.regex_rule import RegexRule
-from .rules.keyword_rule import KeywordRule
 
 
 @dataclass

@@ -4,15 +4,11 @@ Combines Kimi's publish-gate workflow with GPT's QA system.
 Implements 12 automated checks, QA reporting, publish gate, and batch course checks.
 """
 
-import json
-import re
 from dataclasses import dataclass, field
-from typing import Optional
 
-from config import HSK_LEVELS, CONSISTENCY_RULES, BOOK1_LESSONS
+from config import CONSISTENCY_RULES, HSK_LEVELS
+from hsk_vocab import check_vocab_in_hsk
 from privacy_filter import PrivacyFilter
-from hsk_vocab import VOCAB_BY_TOPIC, check_vocab_in_hsk, get_all_vocab_up_to_lesson
-
 
 # ============================================================
 # Data Classes
@@ -23,7 +19,7 @@ class QAIssue:
     """A single QA issue found during checking."""
     category: str           # e.g. "pii", "new_words", "bilingual", "pinyin", etc.
     severity: str           # "error" | "warning" | "info"
-    line: Optional[int]     # line/index reference, None if global
+    line: int | None     # line/index reference, None if global
     message: str            # description of the issue
     suggestion: str = ""    # suggested fix
 
@@ -92,7 +88,7 @@ class QAEngine:
     # Public API
     # ----------------------------------------------------------
 
-    def check_lesson(self, lesson: dict, prev_lessons: list = None) -> QAReport:
+    def check_lesson(self, lesson: dict, prev_lessons: list | None = None) -> QAReport:
         """Run all 12 checks on a single lesson and return a QAReport.
 
         Args:
@@ -184,7 +180,6 @@ class QAEngine:
         sorted_lessons = sorted(lessons, key=lambda l: l.get("id", 0))
         reports = []
         culture_topics_seen = set()
-        grammar_levels = []
         all_issues = []
 
         # Build cumulative previous lessons list incrementally
@@ -318,7 +313,7 @@ class QAEngine:
                         suggestion="Add missing translation layers. 补全缺失的翻译层。",
                     ))
                 else:
-                    speaker, zh, pinyin, literal, natural = line[0], line[1], line[2], line[3], line[4]
+                    zh, pinyin, literal, natural = line[1], line[2], line[3], line[4]
                     missing = []
                     if not zh.strip():
                         missing.append("zh/中文")
@@ -421,7 +416,6 @@ class QAEngine:
             current_patterns.add(gp.get("title", "").lower().strip())
 
         reused = prev_patterns & current_patterns
-        total_current = len(current_patterns) if current_patterns else 1
         reuse_ratio = len(reused) / max(len(prev_patterns), 1)
 
         threshold = self.min_vocab_reuse  # reuse threshold from config
@@ -730,7 +724,7 @@ def demo():
         report1 = engine.check_lesson(lesson1)
         print(report1.summary())
         if report1.issues:
-            print(f"\n  Issues found / 发现问题：")
+            print("\n  Issues found / 发现问题：")
             for issue in report1.issues:
                 sev_icon = {"error": "[ERROR]", "warning": "[WARN] ", "info": "[INFO] "}
                 print(f"    {sev_icon.get(issue.severity, '[?]')} [{issue.category}] {issue.message}")
@@ -740,7 +734,7 @@ def demo():
             print("  No issues found! / 未发现问题！")
 
         # --- Publish Gate ---
-        print(f"\n--- Publish Gate / 发布闸门 ---")
+        print("\n--- Publish Gate / 发布闸门 ---")
         can, blockers = engine.can_export(lesson1)
         status = "APPROVED / 通过" if can else "BLOCKED / 阻断"
         print(f"  Export status: {status}")
@@ -751,11 +745,11 @@ def demo():
     # --- Lesson 8 Check (with lesson 1 as previous) ---
     lesson8 = LESSONS.get(8)
     if lesson8 and lesson1:
-        print(f"\n--- Lesson 8 QA Check (with L1 context) / 第8课质量检查（含第1课上下文） ---")
+        print("\n--- Lesson 8 QA Check (with L1 context) / 第8课质量检查（含第1课上下文） ---")
         report8 = engine.check_lesson(lesson8, prev_lessons=[lesson1])
         print(report8.summary())
         if report8.issues:
-            print(f"\n  Issues found / 发现问题：")
+            print("\n  Issues found / 发现问题：")
             for issue in report8.issues:
                 sev_icon = {"error": "[ERROR]", "warning": "[WARN] ", "info": "[INFO] "}
                 print(f"    {sev_icon.get(issue.severity, '[?]')} [{issue.category}] {issue.message}")
@@ -765,7 +759,7 @@ def demo():
     # --- Batch Course Check ---
     available_lessons = [LESSONS[k] for k in sorted(LESSONS.keys())]
     if len(available_lessons) >= 2:
-        print(f"\n--- Course-Level Check / 课程级检查 ---")
+        print("\n--- Course-Level Check / 课程级检查 ---")
         course_result = engine.check_course(available_lessons)
         print(f"  Total lessons / 总课数: {course_result['total_lessons']}")
         print(f"  Passed / 通过: {course_result['passed']}")

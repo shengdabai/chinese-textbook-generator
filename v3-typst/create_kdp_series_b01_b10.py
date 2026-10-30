@@ -19,7 +19,6 @@ from pathlib import Path
 
 from pypinyin import Style, pinyin
 
-
 BASE_DIR = Path("../..")
 V3_DIR = BASE_DIR / "生成工具" / "v3-typst"
 TARGET_ROOT = BASE_DIR / "中文教材" / "Amazon_KDP_中文学习系列_1-10"
@@ -27,11 +26,10 @@ TEMPLATE_PATH = V3_DIR / "templates" / "textbook.typ"
 
 sys.path.insert(0, str(V3_DIR))
 
+from create_amazon_b71_b80 import BOOKS as SOURCE_BOOKS  # type: ignore
 from filters.content_filter import ContentFilter  # type: ignore
 from parsers.md_parser import MarkdownParser  # type: ignore
 from renderers.typst_renderer import TypstRenderer  # type: ignore
-from create_amazon_b71_b80 import BOOKS as SOURCE_BOOKS  # type: ignore
-
 
 FILTER = ContentFilter(str(V3_DIR / "config" / "filter_rules.yaml"))
 PARSER = MarkdownParser()
@@ -420,10 +418,10 @@ def build_book_md(meta: KdpBookMeta, source_book) -> str:
     lines = [
         f"# Z Turns Chinese Book {meta.number}",
         f"## {meta.title}",
-        f"**Author:** Tony Sheng",
-        f"**Series:** Amazon KDP Chinese Learning Collection",
-        f"**Website:** zturnsgo.com",
-        f"**Teaching Foundation:** Based on real Chinese teaching scenarios and English-speaker learner needs.",
+        "**Author:** Tony Sheng",
+        "**Series:** Amazon KDP Chinese Learning Collection",
+        "**Website:** zturnsgo.com",
+        "**Teaching Foundation:** Based on real Chinese teaching scenarios and English-speaker learner needs.",
         f"**Book Positioning:** {meta.tagline}",
         f"**Source Knowledge Notes:** {', '.join(source_book.source_notes)}",
         "",
@@ -507,7 +505,7 @@ def build_plan_md() -> str:
                 "",
                 f"- 副标题：{meta.subtitle}",
                 f"- 封面卖点：{meta.tagline}",
-                f"- 基础模块：",
+                "- 基础模块：",
             ]
         )
         for unit in source_book.units:

@@ -13,9 +13,6 @@ Usage:
 """
 
 import re
-import unicodedata
-from typing import Any
-
 
 # ============================================================
 # Pinyin Validation

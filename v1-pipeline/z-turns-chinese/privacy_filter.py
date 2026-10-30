@@ -5,6 +5,7 @@ Uses regex + keyword matching for immediate execution without external NLP model
 """
 
 import re
+
 from config import PRIVACY_PATTERNS, PRIVACY_REPLACEMENTS, PRIVACY_WHITELIST
 
 
@@ -109,7 +110,7 @@ def demo_privacy_filter():
     """
 
     pf = PrivacyFilter()
-    findings = pf.scan(sample)
+    pf.scan(sample)
     clean = pf.anonymize(sample)
     report = pf.get_report()
 

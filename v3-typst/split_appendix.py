@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """拆分 appendix 为临时文件，处理后合并回去。"""
-import re, sys
+import re
+import sys
 from pathlib import Path
 
 ROW_RE = re.compile(r"^\|.+\|$")

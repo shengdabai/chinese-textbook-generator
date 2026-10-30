@@ -63,10 +63,8 @@ def inline(text: str) -> str:
 def split_row(line: str) -> list[str]:
     """Split a pipe-row into trimmed cells, ignoring the leading/trailing | ."""
     s = line.strip()
-    if s.startswith('|'):
-        s = s[1:]
-    if s.endswith('|'):
-        s = s[:-1]
+    s = s.removeprefix('|')
+    s = s.removesuffix('|')
     return [c.strip() for c in s.split('|')]
 
 

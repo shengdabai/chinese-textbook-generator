@@ -18,8 +18,7 @@ import copy
 import re
 import warnings
 from pathlib import Path
-from typing import Any, Optional
-
+from typing import Any
 
 DEFAULT_CONFIG = {
     "FILTERS": {
@@ -405,7 +404,7 @@ def _deep_merge(default_value: Any, parsed_value: Any) -> Any:
     return copy.deepcopy(parsed_value)
 
 
-def load_config(config_path: Optional[Path] = None) -> dict[str, Any]:
+def load_config(config_path: Path | None = None) -> dict[str, Any]:
     """Load config from YAML file, fallback to defaults."""
     if config_path is None:
         config_path = Path(__file__).parent / "content_filter_config.yaml"
@@ -430,7 +429,7 @@ def load_config(config_path: Optional[Path] = None) -> dict[str, Any]:
 class ContentFilter:
     """Sanitize and filter content for teaching-safe output."""
 
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Path | None = None):
         self.config = load_config(config_path)
         self.filters = self.config.get("FILTERS", DEFAULT_CONFIG["FILTERS"])
         self.placeholder = self.config.get(

@@ -4,8 +4,8 @@ Defines NodeType enum and MdParser class that converts Markdown text
 into a list of AST node dicts consumed by renderers.
 """
 
-from enum import Enum
 import re
+from enum import Enum
 
 
 class NodeType(str, Enum):

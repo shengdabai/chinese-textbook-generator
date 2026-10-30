@@ -1,0 +1,34 @@
+# Lint settings only; this repository is not an installable package.
+[tool.ruff]
+# v2-weasyprint/enrich_hsk_content.py already uses 3.12-only f-string syntax
+# (backslashes inside replacement fields) and CI runs 3.13.
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+    # Scripts are run as `python <name>.py`; the executable bit is not relied on.
+    "EXE001",
+    # Batch generators catch Exception per book/chapter, log it and continue,
+    # so one bad input does not stop a 20-book run.
+    "BLE001",
+    # Every subprocess.run call checks returncode (or typst's stderr) itself.
+    "PLW1510",
+    # Best-effort optional steps (font discovery, macOS metadata, textutil
+    # fallback) deliberately skip on failure.
+    "S110",
+    "S112",
+    # A ValueError raised inside a try is caught by the same function's handler.
+    "TRY004",
+    # Class-level lookup tables that are only read, never mutated.
+    "RUF012",
+    # Style-only rewrites that do not catch bugs.
+    "G201",
+    "SIM102",
+    # Merging if/elif arms with the same body into one `or` chain drops the
+    # per-branch comments and makes 200-character conditions.
+    "SIM114",
+    "PIE810",
+    "C401",
+    "RUF015",
+    "PERF102",
+]

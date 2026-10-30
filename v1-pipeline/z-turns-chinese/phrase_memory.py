@@ -7,9 +7,7 @@ Z Turns Chinese 核心资产系统，管理和复用教材中的句型模板。
 import json
 import os
 import uuid
-from dataclasses import dataclass, field, asdict
-from typing import Optional
-
+from dataclasses import asdict, dataclass, field
 
 # ============================================================
 # Data Model
@@ -55,7 +53,7 @@ class PhraseMemory:
         os.path.dirname(os.path.abspath(__file__)), "data", "phrase_memory.json"
     )
 
-    def __init__(self, filepath: Optional[str] = None):
+    def __init__(self, filepath: str | None = None):
         self.filepath = filepath or self.DEFAULT_PATH
         self._phrases: dict[str, Phrase] = {}
         self._load_or_init()
@@ -92,7 +90,7 @@ class PhraseMemory:
         level: str,
         function: str,
         first_lesson_id: int,
-        aliases: Optional[list] = None,
+        aliases: list | None = None,
         status: str = "approved",
     ) -> str:
         """添加新句型，返回 phrase_id"""
@@ -113,7 +111,7 @@ class PhraseMemory:
         self._save()
         return phrase_id
 
-    def get_phrase(self, phrase_id: str) -> Optional[dict]:
+    def get_phrase(self, phrase_id: str) -> dict | None:
         """按ID获取句型"""
         phrase = self._phrases.get(phrase_id)
         return phrase.to_dict() if phrase else None
@@ -269,7 +267,7 @@ class PhraseMemory:
     # Import / Export
     # ----------------------------------------------------------
 
-    def export_json(self, filepath: Optional[str] = None) -> str:
+    def export_json(self, filepath: str | None = None) -> str:
         """导出为JSON。返回JSON字符串；如指定filepath则同时写入文件。"""
         data = {pid: p.to_dict() for pid, p in self._phrases.items()}
         json_str = json.dumps(data, ensure_ascii=False, indent=2)

@@ -12,7 +12,8 @@ Usage:
     python3 generate_books_enhanced.py 51 52 53
     python3 generate_books_enhanced.py  # all books 51-70
 """
-import os, sys, re
+import re
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "v1-pipeline" / "z-turns-chinese"))
@@ -798,7 +799,7 @@ def make_chapter(book_num: int, ch_num: int, en_title: str, zh_title: str,
 
     # Build 20 vocabulary items (more than before)
     vocab_items = [
-        (key_word_zh, "kěyǐ", "core term", "noun/verb", f"核心词汇，贯穿本章"),
+        (key_word_zh, "kěyǐ", "core term", "noun/verb", "核心词汇，贯穿本章"),
         ("理解", "lǐjiě", "to understand", "verb", "理解 = understand deeply, not just know"),
         ("表达", "biǎodá", "to express", "verb", "表达自己 = express yourself"),
         ("文化", "wénhuà", "culture", "noun", "文化背景 = cultural background"),
@@ -1072,7 +1073,7 @@ The students who succeed fastest are not those with the largest vocabulary — t
         "",
         f"He wrote **{key_word_zh}** on the board — the Chinese term for {key_word_en} — and let the class study it for a moment.",
         "",
-        f"\"This character, or these characters, carry more meaning than any dictionary definition can capture,\" Tony continued. \"They are embedded in culture, in history, in the way Chinese people see the world. By the end of today's class, you won't just know the word — you'll understand it.\"",
+        "\"This character, or these characters, carry more meaning than any dictionary definition can capture,\" Tony continued. \"They are embedded in culture, in history, in the way Chinese people see the world. By the end of today's class, you won't just know the word — you'll understand it.\"",
         "",
         f"The class was quiet, attentive. {s2} had already opened a notebook. Outside, the sounds of Shanghai's afternoon traffic filtered through the windows — motorbikes, horns, the occasional announcement from a nearby subway station. The city itself was a constant reminder of why they were here, learning this language, one character at a time.",
         "",
@@ -1130,23 +1131,23 @@ The students who succeed fastest are not those with the largest vocabulary — t
         "",
         f"Based on Tony's experience teaching hundreds of foreign students, here are the most common mistakes learners make when dealing with {key_word_zh}:",
         "",
-        f"**Mistake 1: Direct translation**",
+        "**Mistake 1: Direct translation**",
         f"Translating your native language's approach to {topic_en} word-for-word into Chinese. This produces grammatically correct but culturally jarring sentences.",
-        f"❌ Wrong approach: Translate literally",
-        f"✓ Right approach: Think in the Chinese cultural framework first, then speak",
+        "❌ Wrong approach: Translate literally",
+        "✓ Right approach: Think in the Chinese cultural framework first, then speak",
         "",
-        f"**Mistake 2: Ignoring register**",
-        f"Using casual language (口语 kǒuyǔ) in formal situations, or overly formal language in casual settings. Chinese has a wider register gap than many Western languages.",
-        f"❌ 你好，我要问个事儿。(Too casual for a formal office context)",
-        f"✓ 您好，我想请教一个问题。(Appropriately polite)",
+        "**Mistake 2: Ignoring register**",
+        "Using casual language (口语 kǒuyǔ) in formal situations, or overly formal language in casual settings. Chinese has a wider register gap than many Western languages.",
+        "❌ 你好，我要问个事儿。(Too casual for a formal office context)",
+        "✓ 您好，我想请教一个问题。(Appropriately polite)",
         "",
-        f"**Mistake 3: Rushing the relationship**",
+        "**Mistake 3: Rushing the relationship**",
         f"Getting straight to the point without the expected preliminary small talk. In Chinese communication, especially for {topic_en}, the journey matters as much as the destination.",
         f"❌ Immediately: 我需要你帮我处理{key_word_zh}。",
-        f"✓ First: 最近忙吗？……（after some conversation）对了，我有个事情想请你帮忙……",
+        "✓ First: 最近忙吗？……（after some conversation）对了，我有个事情想请你帮忙……",
         "",
-        f"**Mistake 4: Not accounting for face**",
-        f"Phrasing a request or correction in a way that causes embarrassment. Always soften corrections with 可能 or 也许, and always give the other person a way to agree gracefully.",
+        "**Mistake 4: Not accounting for face**",
+        "Phrasing a request or correction in a way that causes embarrassment. Always soften corrections with 可能 or 也许, and always give the other person a way to agree gracefully.",
         "",
         "---",
         "",
@@ -1162,7 +1163,7 @@ The students who succeed fastest are not those with the largest vocabulary — t
         "",
         f"**Your homework:** Find one real-life situation this week where you can apply what you learned about {key_word_zh}. It doesn't have to be perfect — the goal is to try, notice, and learn from what happens.",
         "",
-        f"*As Tony always says: 学语言不只是学说话，更是学做人。Learning a language is not just learning to speak — it's learning a whole way of being.*",
+        "*As Tony always says: 学语言不只是学说话，更是学做人。Learning a language is not just learning to speak — it's learning a whole way of being.*",
     ]
 
     if getnote_section:

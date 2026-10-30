@@ -3,15 +3,14 @@ VocabLedger - Cross-lesson Vocabulary Tracking System
 Tracks all vocabulary across courses with HSK compliance checking.
 """
 
+import csv
 import json
 import os
 import uuid
-import csv
-from dataclasses import dataclass, field, asdict
-from typing import Optional
+from dataclasses import asdict, dataclass, field
 
+from config import BOOK1_LESSONS
 from hsk_vocab import VOCAB_BY_TOPIC
-from config import HSK_LEVELS, BOOK1_LESSONS
 
 
 @dataclass
@@ -35,7 +34,7 @@ class VocabEntry:
 class VocabLedger:
     """Cross-lesson vocabulary tracking ledger."""
 
-    def __init__(self, data_dir: Optional[str] = None):
+    def __init__(self, data_dir: str | None = None):
         if data_dir is None:
             data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
         self.data_dir = data_dir
@@ -238,7 +237,7 @@ def demo():
 
     # Stats
     stats = ledger.get_vocab_stats()
-    print(f"\n[2] Vocab Stats:")
+    print("\n[2] Vocab Stats:")
     for k, v in stats.items():
         print(f"    {k}: {v}")
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Enrich HSK 2-79 prep guides with detailed content matching HSK 1 quality."""
 
-import json, os
+import json
+import os
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
@@ -187,7 +188,7 @@ write_file(base / 'part1-vocabulary-grammar/07-new-grammar.md', f"""# HSK 2 New 
 """)
 
 # Enrich HSK 2 listening section
-write_file(base / 'part2-listening/04-listening-mock.md', f"""# Listening Mock Practice — HSK 2 Full Set
+write_file(base / 'part2-listening/04-listening-mock.md', """# Listening Mock Practice — HSK 2 Full Set
 
 ## Practice Listening Test (25 questions)
 

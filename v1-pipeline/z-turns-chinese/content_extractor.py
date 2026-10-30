@@ -18,17 +18,16 @@ Usage:
     python3 content_extractor.py --text "TEXT"      # Analyze text directly
 """
 
-import re
-import os
-import sys
 import json
+import os
+import re
 import subprocess
-import unicodedata
+import sys
 from html.parser import HTMLParser
-from urllib.request import urlopen, Request
-from urllib.error import URLError, HTTPError
-from urllib.parse import urlparse
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 # ---------------------------------------------------------------------------
 # Optional: jieba for Chinese word segmentation
@@ -859,7 +858,7 @@ def demo():
     print(f"  Dialogue pairs: {len(transcript['dialogues'])}")
     if transcript['dialogues']:
         pair = transcript['dialogues'][0]
-        print(f"    First pair:")
+        print("    First pair:")
         print(f"      {pair['A']['speaker']}: {pair['A']['text']}")
         print(f"      {pair['B']['speaker']}: {pair['B']['text']}")
 

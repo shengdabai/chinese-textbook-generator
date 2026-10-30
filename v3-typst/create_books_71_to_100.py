@@ -9,7 +9,6 @@ Follows the Book51-70 template structure:
 from __future__ import annotations
 
 import subprocess
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -1778,10 +1777,10 @@ def compile_pdf(md_path: Path, book: Book, pdf_path: Path) -> bool:
             if result.stderr:
                 print(f"    stderr: {result.stderr[:500]}")
             return False
-        print(f"  ✓ PDF compiled")
+        print("  ✓ PDF compiled")
         return True
     except subprocess.TimeoutExpired:
-        print(f"  ✗ PDF compile timeout")
+        print("  ✗ PDF compile timeout")
         return False
     except Exception as e:
         print(f"  ✗ Exception: {e}")

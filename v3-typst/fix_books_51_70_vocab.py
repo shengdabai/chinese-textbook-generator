@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import re
 import subprocess
-import sys
 from pathlib import Path
+
 from pypinyin import Style, pinyin
 
 BASE = Path("../..")
@@ -148,9 +148,9 @@ def main() -> None:
 
         if not args.md_only and count > 0:
             if compile_pdf(md, n, title, subtitle, color, pdf):
-                print(f"  ✓ PDF recompiled")
+                print("  ✓ PDF recompiled")
             else:
-                print(f"  ✗ PDF recompile failed")
+                print("  ✗ PDF recompile failed")
 
 
 if __name__ == "__main__":

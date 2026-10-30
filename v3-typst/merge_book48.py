@@ -4,6 +4,7 @@ Chapter 24 (industry perspective) and Chapter 25 (poetic perspective)
 as bonus appendix chapters to the Film_Entertainment version.
 """
 from __future__ import annotations
+
 from pathlib import Path
 
 ROOT = Path("../../output")

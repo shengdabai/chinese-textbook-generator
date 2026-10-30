@@ -3,7 +3,6 @@
 Generate Z Turns Chinese Books 51-70 content as merged MD files.
 Each book has 25 chapters with 6 sections each.
 """
-import os
 from pathlib import Path
 
 OUTPUT_BASE = Path("output")
@@ -704,15 +703,15 @@ def make_chapter(book_num, ch_num, en_title, zh_title, topic_en, key_word_zh, ke
 
     vocab_rows = [
         (f"{key_word_zh}技巧", f"{key_word_en} skills", "noun", "核心技能词汇"),
-        (f"专业", "professional", "adjective", "用于描述人或行为"),
-        (f"沟通", "communicate", "verb", "沟通 = communicate，非常常用"),
-        (f"重要", "important", "adjective", "很重要 = very important"),
-        (f"经验", "experience", "noun", "工作经验 = work experience"),
-        (f"机会", "opportunity", "noun", "抓住机会 = seize the opportunity"),
-        (f"成功", "success/succeed", "noun/verb", "成功地 = successfully"),
-        (f"问题", "question/problem", "noun", "语境决定是问题还是问题"),
-        (f"方法", "method/approach", "noun", "有效的方法 = effective method"),
-        (f"结果", "result/outcome", "noun", "期望结果 = expected outcome"),
+        ("专业", "professional", "adjective", "用于描述人或行为"),
+        ("沟通", "communicate", "verb", "沟通 = communicate，非常常用"),
+        ("重要", "important", "adjective", "很重要 = very important"),
+        ("经验", "experience", "noun", "工作经验 = work experience"),
+        ("机会", "opportunity", "noun", "抓住机会 = seize the opportunity"),
+        ("成功", "success/succeed", "noun/verb", "成功地 = successfully"),
+        ("问题", "question/problem", "noun", "语境决定是问题还是问题"),
+        ("方法", "method/approach", "noun", "有效的方法 = effective method"),
+        ("结果", "result/outcome", "noun", "期望结果 = expected outcome"),
     ]
 
     vocab_table = "| Chinese | Pinyin | English | Part of Speech | Usage Note |\n"
@@ -723,7 +722,6 @@ def make_chapter(book_num, ch_num, en_title, zh_title, topic_en, key_word_zh, ke
         "成功": "chénggōng", "问题": "wèntí", "方法": "fāngfǎ", "结果": "jiéguǒ",
     }
     for zh, en, pos, note in vocab_rows:
-        base = zh.replace("技巧", "").replace(key_word_zh, "")
         py = pinyin_map.get(zh, pinyin_map.get(zh[-2:], "..."))
         vocab_table += f"| {zh} | {py} | {en} | {pos} | {note} |\n"
 

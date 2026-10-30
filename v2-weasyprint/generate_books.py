@@ -8,6 +8,7 @@ import os
 import re
 import sys
 from pathlib import Path
+
 from fpdf import FPDF, XPos, YPos
 from fpdf.enums import Align
 
@@ -252,7 +253,7 @@ def find_cjk_font():
 # ─────────────────────────────────────────────
 class Block:
     """Parsed content block."""
-    __slots__ = ("kind", "data")
+    __slots__ = ("data", "kind")
 
     def __init__(self, kind, data):
         self.kind = kind   # h1 h2 h3 four_layer table paragraph rule bullet numbered
@@ -435,7 +436,7 @@ class BookPDF(FPDF):
     def add_cover(self):
         self.add_page()
         r, g, b = self.color
-        w, h = 210, 297  # A4
+        w = 210  # A4 width in mm
 
         # Color band top
         self.set_fill_color(r, g, b)
@@ -657,7 +658,6 @@ class BookPDF(FPDF):
         english = data.get("english", "")
 
         # Calculate required height with rough estimate
-        line_ht = 7
         box_h = 10  # top padding
         if chinese:
             box_h += 10
@@ -849,7 +849,6 @@ def build_book(book_key: str, meta: dict, font_path: str):
     pdf.add_cover()
 
     # TOC placeholder page (we'll insert entries as we go)
-    toc_page_num = 2
     pdf.add_page()  # reserve page 2 for TOC — we'll rewrite it
 
     # Content pages

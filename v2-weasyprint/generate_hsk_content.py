@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Generate all HSK prep guide content for all 7 levels."""
 
-import json, os, re
+import json
+import os
+import re
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -610,7 +612,7 @@ def english_meaning_for(word):
     """Look up an English gloss from local overrides and the persisted cache."""
     clean = clean_vocab_word(word)
     for key in (word, clean):
-        if key in COMMON_TRANSLATIONS and COMMON_TRANSLATIONS[key]:
+        if COMMON_TRANSLATIONS.get(key):
             return COMMON_TRANSLATIONS[key]
         cached = TRANSLATION_CACHE.get(key, '')
         if cached:
