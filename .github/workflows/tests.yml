@@ -30,12 +30,15 @@ jobs:
         with:
           python-version: '3.13'
           cache: pip
-          cache-dependency-path: v3-typst/requirements.txt
+          cache-dependency-path: |
+            requirements-dev.txt
+            v3-typst/requirements.txt
 
-      # Pinned so a new ruff release cannot change the default rule set under us.
+      # ruff is pinned in requirements-dev.txt so a new release cannot change
+      # the default rule set under us.
       - name: Lint (ruff)
         run: |
-          python -m pip install ruff==0.17.1
+          python -m pip install -r requirements-dev.txt
           ruff check .
 
       - name: v2-weasyprint glossary tests (stdlib only)

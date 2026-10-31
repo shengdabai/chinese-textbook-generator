@@ -84,7 +84,16 @@ python main.py                            # see this dir's README for options
 
 - **Bring your own content.** The generator can splice in your own teaching material instead of (or alongside) generated text. See `v1-pipeline/z-turns-chinese/content_source_example.py` for the interface and `BOOK_CONTENT_MAP` wiring.
 - **Pick a pipeline.** `v3-typst` is the current/recommended path for typesetting; `v1-pipeline` is the live-AI generation engine; `v2-weasyprint` is kept for reference.
-- **Run the tests.** `cd v3-typst && pytest` exercises the parser, renderer, and content filter.
+- **Run the tests.** CI (`.github/workflows/tests.yml`) runs four gates; run the same commands from the repository root before pushing:
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements-dev.txt -r v3-typst/requirements.txt  # ruff is pinned in requirements-dev.txt
+ruff check .                                                  # 1. lint
+python -m unittest discover -s v2-weasyprint -p 'test_*.py'  # 2. v2-weasyprint tests (standard library only)
+(cd v3-typst && python -m pytest -q)                         # 3. v3-typst parser, renderer, content filter
+python -m unittest discover -s tests -p 'test_*.py'          # 4. every script imports without writing files; CI/README stay in sync
+```
 
 ## 🗺️ Status — honest read
 
@@ -146,7 +155,7 @@ Licensed under the MIT License — see [LICENSE](LICENSE).
 | 增强批量生成器 | Python，模板驱动的结构化内容（无需 API key） |
 | 排版（v3，当前） | **[Typst](https://typst.app/)** 模板 + 自研 Markdown parser / renderer / filter |
 | 排版（v2，遗留） | WeasyPrint / HTML → PDF |
-| 测试 | `pytest`（parser、renderer、content filter） |
+| 测试与 lint | `ruff`（版本固定在 `requirements-dev.txt`）、v2 `unittest`、v3 `pytest`（parser、renderer、content filter）、根目录 `tests/`（导入无副作用） |
 
 **提供商设计方案** 覆盖：**Claude · GPT-5.4pro · Gemini · Kimi · Grok · Minimax**（各一份 `技术方案.md`），描述同一套教材生成思路如何映射到各家 API 与特性。
 
@@ -187,7 +196,16 @@ python main.py                            # 选项见该目录 README
 
 - **接入自己的内容。** 生成器支持把你自己的教学素材接入流程，替换或补充生成内容。接口见 `v1-pipeline/z-turns-chinese/content_source_example.py`，并配置 `BOOK_CONTENT_MAP`。
 - **选择管线。** `v3-typst` 是当前推荐的排版路径；`v1-pipeline` 是实时 AI 生成引擎；`v2-weasyprint` 作为参考保留。
-- **跑测试。** `cd v3-typst && pytest` 会覆盖 parser、renderer 和 content filter。
+- **跑测试。** CI（`.github/workflows/tests.yml`）有四道检查；推送前在仓库根目录跑同样的命令：
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements-dev.txt -r v3-typst/requirements.txt  # ruff 版本固定在 requirements-dev.txt
+ruff check .                                                  # 1. lint
+python -m unittest discover -s v2-weasyprint -p 'test_*.py'  # 2. v2-weasyprint 测试（只用标准库）
+(cd v3-typst && python -m pytest -q)                         # 3. v3-typst 的 parser、renderer、content filter
+python -m unittest discover -s tests -p 'test_*.py'          # 4. 所有脚本导入时不写文件；CI 与 README 保持一致
+```
 
 ## 🗺️ 项目状态 —— 实话实说
 

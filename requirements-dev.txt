@@ -1,0 +1,4 @@
+# Lint tooling for CI and local checks. Pinned so a new ruff release cannot
+# change the default rule set under us. Test dependencies for v3-typst live in
+# v3-typst/requirements.txt; v2-weasyprint tests need only the standard library.
+ruff==0.17.1
