@@ -20,6 +20,16 @@ class NodeType(str, Enum):
 
 
 _VOCAB_HEADER_PATTERN = re.compile(r"pinyin", re.IGNORECASE)
+_OUTER_PIPE = re.compile(r"^\||\|$")
+
+
+def _split_row(line: str) -> list[str]:
+    """Split a pipe-table line into stripped cells.
+
+    Only one leading and one trailing ``|`` are removed, so a row ending in
+    ``||`` keeps its empty last cell.
+    """
+    return [c.strip() for c in _OUTER_PIPE.sub("", line.strip()).split("|")]
 
 
 class MarkdownParser:
@@ -30,16 +40,19 @@ class MarkdownParser:
 
         Vocabulary tables (a pipe table whose header mentions "Pinyin") become
         ``NodeType.VOCAB_TABLE`` nodes. Their ``rows`` always hold full
-        7-tuples ``(hanzi, pinyin, pos, meaning, ex_zh, ex_pinyin, ex_en)``;
-        a column the source table does not have is an empty string, and
-        trailing empty cells are not trimmed, because
-        ``TypstRenderer`` unpacks all seven fields:
+        7-tuples ``(hanzi, pinyin, pos, meaning, ex_zh, ex_pinyin, ex_en)``,
+        because ``TypstRenderer`` unpacks all seven fields. A column the
+        source table does not have is an empty string. Empty cells, including
+        a trailing one written as ``||``, are kept, and a row shorter than the
+        header is padded with ``""`` so every cell stays in its header column:
 
-        - 7+ columns: the cells in order (``ex_en`` is ``""`` if missing).
+        - 7+ columns: the first seven cells in order.
         - 6 columns: ``ex_pinyin`` is ``""``.
-        - fewer columns (or a row with fewer than 6 cells): ``pos`` is the
-          third cell, ``meaning`` is the last cell, and the three example
-          fields are ``""``. Rows with fewer than 3 cells are skipped.
+        - fewer columns: ``pos`` is the third cell, ``meaning`` is the cell
+          under the last header column, and the three example fields are
+          ``""``.
+
+        Rows with fewer than 3 cells are skipped.
 
         ``has_examples`` (6+ header columns) and ``has_pinyin_example``
         (7+ header columns) tell the renderer which layout to use.
@@ -120,15 +133,14 @@ class MarkdownParser:
 
             # Table (pipe-delimited)
             if "|" in line:
-                headers = [h.strip() for h in line.strip().strip("|").split("|")]
+                headers = _split_row(line)
                 rows = []
                 i += 1
                 # skip separator row
                 if i < len(lines) and re.match(r"^[\|\-\s:]+$", lines[i]):
                     i += 1
                 while i < len(lines) and "|" in lines[i]:
-                    row = [c.strip() for c in lines[i].strip().strip("|").split("|")]
-                    rows.append(tuple(row))
+                    rows.append(tuple(_split_row(lines[i])))
                     i += 1
                 # Detect vocab table: header contains "Pinyin"
                 is_vocab = any(_VOCAB_HEADER_PATTERN.search(h) for h in headers)
@@ -140,14 +152,19 @@ class MarkdownParser:
                     has_examples = ncols >= 6
                     has_pinyin_example = ncols >= 7
                     vocab_rows = []
+                    meaning_col = max(ncols, 3) - 1
                     for row in rows:
-                        if has_pinyin_example and len(row) >= 6:
-                            vocab_rows.append((row[0], row[1], row[2], row[3], row[4], row[5], row[6] if len(row) > 6 else ""))
-                        elif has_examples and len(row) >= 6:
+                        if len(row) < 3:
+                            continue
+                        # Pad short rows so each cell stays under its header.
+                        cells = list(row) + [""] * (max(ncols, 7) - len(row))
+                        if has_pinyin_example:
+                            vocab_rows.append(tuple(cells[:7]))
+                        elif has_examples:
                             # 6-col: insert empty pinyin col between ex_zh and ex_en
-                            vocab_rows.append((row[0], row[1], row[2], row[3], row[4], "", row[5]))
-                        elif len(row) >= 3:
-                            vocab_rows.append((row[0], row[1], row[2], row[-1], "", "", ""))
+                            vocab_rows.append((cells[0], cells[1], cells[2], cells[3], cells[4], "", cells[5]))
+                        else:
+                            vocab_rows.append((cells[0], cells[1], cells[2], cells[meaning_col], "", "", ""))
                     nodes.append({
                         "type": NodeType.VOCAB_TABLE,
                         "has_examples": has_examples,

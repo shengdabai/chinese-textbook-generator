@@ -5,22 +5,22 @@ import os
 import shutil
 from pathlib import Path
 
+from hsk_paths import HSK_ROOT
+
 BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
-# Generated content lives in v2-weasyprint root (e.g., hsk1-prep/)
-HSK_BASE = BASE
 OUTPUT_DIR = BASE / 'output'
 
 # Destination: 中文教材 folder
 CHINESE_TEXTBOOK_DIR = Path.home() / 'Desktop' / '中文教学' / '中文教材'
 
 LEVELS = [
-    ('HSK备考/hsk1-prep', 'HSK1'),
-    ('HSK备考/hsk2-prep', 'HSK2'),
-    ('HSK备考/hsk3-prep', 'HSK3'),
-    ('HSK备考/hsk4-prep', 'HSK4'),
-    ('HSK备考/hsk5-prep', 'HSK5'),
-    ('HSK备考/hsk6-prep', 'HSK6'),
-    ('HSK备考/hsk79-prep', 'HSK7-9'),
+    ('hsk1-prep', 'HSK1'),
+    ('hsk2-prep', 'HSK2'),
+    ('hsk3-prep', 'HSK3'),
+    ('hsk4-prep', 'HSK4'),
+    ('hsk5-prep', 'HSK5'),
+    ('hsk6-prep', 'HSK6'),
+    ('hsk79-prep', 'HSK7-9'),
 ]
 
 LEVEL_TITLES = {
@@ -125,7 +125,7 @@ def main():
     print("=== HSK Content Merger ===")
 
     for src_dir, label in LEVELS:
-        src = BASE / src_dir
+        src = HSK_ROOT / src_dir
         if not src.exists():
             print(f"  SKIP: {src_dir} not found")
             continue

@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 
+from hsk_paths import HSK_ROOT
+
 BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
 
 def write_file(path, content):
@@ -40,7 +42,7 @@ def main():
     # ============================================================
     # HSK 2 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk2-prep'
+    base = HSK_ROOT / 'hsk2-prep'
 
     # Exam overview - detailed
     write_file(base / 'part0-exam-overview/03-prep-plan.md', """# HSK 2 Prep Plan — 8-Week Standard Schedule
@@ -255,7 +257,7 @@ Look at 5 pictures (A-E) and a word bank (F). Write a sentence for each picture 
     # ============================================================
     # HSK 3 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk3-prep'
+    base = HSK_ROOT / 'hsk3-prep'
 
     write_file(base / 'part1-vocabulary-grammar/08-core-grammar.md', f"""# HSK 3 Core Grammar — The Complement System
 
@@ -305,7 +307,7 @@ Common result complements:
     # ============================================================
     # HSK 4 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk4-prep'
+    base = HSK_ROOT / 'hsk4-prep'
 
     write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 4 Core Grammar
 
@@ -344,7 +346,7 @@ Structure: Subject + 把 + Object + Verb + Result/Direction
     # ============================================================
     # HSK 5 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk5-prep'
+    base = HSK_ROOT / 'hsk5-prep'
 
     write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 5 Core Grammar — Advanced Structures
 
@@ -369,7 +371,7 @@ Structure: Subject + 把 + Object + Verb + Result/Direction
     # ============================================================
     # HSK 6 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk6-prep'
+    base = HSK_ROOT / 'hsk6-prep'
 
     write_file(base / 'part1-vocabulary-grammar/05-advanced-grammar.md', f"""# HSK 6 Advanced Grammar — Discourse & Rhetoric
 
@@ -392,7 +394,7 @@ Structure: Subject + 把 + Object + Verb + Result/Direction
     # ============================================================
     # HSK 7-9 ENRICHMENT
     # ============================================================
-    base = BASE / 'hsk79-prep'
+    base = HSK_ROOT / 'hsk79-prep'
 
     # One exam three levels detail
     write_file(base / 'part0-exam-overview/05-one-exam-three-levels.md', """# One Exam, Three Levels (一卷三试) — Detailed Guide

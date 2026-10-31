@@ -50,3 +50,44 @@ def test_parse_list():
     lists = [n for n in nodes if n["type"] == NodeType.LIST]
     assert len(lists) == 1
     assert len(lists[0]["items"]) == 2
+
+
+def test_vocab_row_keeps_trailing_empty_cell():
+    # A 6-column row whose last cell (ex_en) is empty ends in "||"; it must stay 6 cells.
+    p = MarkdownParser()
+    md = (
+        "| Word | Pinyin | PoS | Meaning | Example_ZH | Example_EN |\n"
+        "|---|---|---|---|---|---|\n"
+        "| 学 | xué | verb | learn | 我学中文。||\n"
+    )
+    table = next(n for n in p.parse(md) if n["type"] == NodeType.VOCAB_TABLE)
+    assert table["rows"][0] == ("学", "xué", "verb", "learn", "我学中文。", "", "")
+
+
+def test_short_vocab_row_is_padded_to_header_width():
+    p = MarkdownParser()
+    md = (
+        "| Word | Pinyin | PoS | Meaning | Example_ZH | Example_Pinyin | Example_EN |\n"
+        "|---|---|---|---|---|---|---|\n"
+        "| 学 | xué | verb | learn | 我学中文。 |\n"
+        "| 书 | shū | noun |\n"
+    )
+    table = next(n for n in p.parse(md) if n["type"] == NodeType.VOCAB_TABLE)
+    assert table["rows"] == [
+        ("学", "xué", "verb", "learn", "我学中文。", "", ""),
+        ("书", "shū", "noun", "", "", "", ""),
+    ]
+
+
+def test_three_column_vocab_table_meaning_is_last_column():
+    p = MarkdownParser()
+    md = "| 汉字 | Pinyin | English |\n|---|---|---|\n| 学 | xué | learn |\n"
+    table = next(n for n in p.parse(md) if n["type"] == NodeType.VOCAB_TABLE)
+    assert table["rows"][0][3] == "learn"
+
+
+def test_regular_table_keeps_trailing_empty_cell():
+    p = MarkdownParser()
+    md = "| 列A | 列B | 列C |\n|---|---|---|\n| 值1 | 值2 ||\n"
+    table = next(n for n in p.parse(md) if n["type"] == NodeType.TABLE)
+    assert table["rows"][0] == ("值1", "值2", "")

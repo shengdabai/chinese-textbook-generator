@@ -7,7 +7,12 @@ import the test checks that:
 * the subprocess exited normally (no ``sys.exit`` or exception at import),
 * nothing was printed to stdout,
 * the working directory and HOME are still empty,
-* no file or directory in the checkout was created, removed or modified.
+* no file or directory in the checkout was created, removed or modified,
+* no write happened anywhere else either: an audit hook in the subprocess
+  blocks and reports open() for writing, mkdir, rmdir, remove, rename, symlink,
+  link and truncate outside the temporary cwd/HOME (and /dev/null), so writes
+  to absolute or ``..``-relative paths fail the import even if the module
+  catches the error.
 
 Optional heavy dependencies that CI does not install (weasyprint, fpdf2, the
 Anthropic SDK, PDF readers, jieba) are replaced by empty stub modules only when
@@ -57,10 +62,73 @@ class _StubFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
         pass
 
 
+import os
+
+# Block every filesystem write outside the temp cwd and HOME (the snapshot check
+# in the parent still requires those to stay empty). Reads are allowed.
+SANDBOX = [os.path.realpath(os.getcwd()), os.path.realpath(os.environ['HOME'])]
+WRITE_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_APPEND | os.O_CREAT | os.O_TRUNC
+# event -> indexes of the path arguments it writes to
+PATH_EVENTS = {
+    'os.mkdir': (0,), 'os.rmdir': (0,), 'os.remove': (0,), 'os.rename': (0, 1),
+    'os.symlink': (1,), 'os.link': (1,), 'os.truncate': (0,),
+}
+BLOCKED = []
+_in_hook = False
+
+
+def _allowed(path):
+    if isinstance(path, int):  # an already-open file descriptor
+        return True
+    full = os.path.realpath(os.fsdecode(path))
+    return full == os.devnull or any(full == d or full.startswith(d + os.sep) for d in SANDBOX)
+
+
+def _audit(event, args):
+    global _in_hook
+    if _in_hook:
+        return
+    if event == 'open':
+        path, mode, flags = args
+        writes = (isinstance(mode, str) and any(c in mode for c in 'wax+')) or bool((flags or 0) & WRITE_FLAGS)
+        paths = [path] if writes and path is not None else []
+    else:
+        paths = [args[i] for i in PATH_EVENTS.get(event, ())]
+    _in_hook = True
+    try:
+        bad = [p for p in paths if not _allowed(p)]
+    finally:
+        _in_hook = False
+    if bad:
+        BLOCKED.extend((event, os.fsdecode(p)) for p in bad)
+        raise PermissionError(f'blocked {event} outside the sandbox: {bad}')
+
+
 sys.meta_path.insert(0, _StubFinder())
 sys.path.insert(0, sys.argv[1])
-importlib.import_module(sys.argv[2])
+sys.addaudithook(_audit)
+try:
+    importlib.import_module(sys.argv[2])
+finally:
+    # Also report writes the module caught and ignored.
+    if BLOCKED:
+        sys.stderr.write(''.join(f'blocked {event}: {path}\n' for event, path in BLOCKED))
+        sys.exit(3)
 '''
+
+
+def import_in_child(root, name, cwd, home):
+    """Import ``name`` from ``root`` in a fresh interpreter with the given cwd and HOME."""
+    env = {
+        'PATH': os.environ.get('PATH', ''),
+        'HOME': str(home),
+        'PYTHONDONTWRITEBYTECODE': '1',
+        'PYTHONUTF8': '1',
+    }
+    return subprocess.run(
+        [sys.executable, '-B', '-c', CHILD, str(root), name],
+        cwd=cwd, env=env, capture_output=True, text=True, timeout=120,
+    )
 
 
 def discover_modules():
@@ -103,17 +171,8 @@ class ImportHasNoSideEffectsTest(unittest.TestCase):
                 tempfile.TemporaryDirectory() as cwd,
                 tempfile.TemporaryDirectory() as home,
             ):
-                env = {
-                    'PATH': os.environ.get('PATH', ''),
-                    'HOME': home,
-                    'PYTHONDONTWRITEBYTECODE': '1',
-                    'PYTHONUTF8': '1',
-                }
                 before = snapshot(REPO)
-                result = subprocess.run(
-                    [sys.executable, '-B', '-c', CHILD, str(root), name],
-                    cwd=cwd, env=env, capture_output=True, text=True, timeout=120,
-                )
+                result = import_in_child(root, name, cwd, home)
                 after = snapshot(REPO)
 
                 self.assertEqual(result.returncode, 0, f'import failed:\n{result.stdout}\n{result.stderr}')
@@ -122,6 +181,53 @@ class ImportHasNoSideEffectsTest(unittest.TestCase):
                 self.assertEqual(sorted(os.listdir(home)), [], 'import wrote into HOME')
                 changed = sorted(k for k in before.keys() | after.keys() if before.get(k) != after.get(k))
                 self.assertEqual(changed, [], 'import changed files in the checkout')
+
+
+
+class SandboxCatchesEscapingWritesTest(unittest.TestCase):
+    """Mutation checks: a module that writes outside cwd/HOME/the repo must fail the import.
+
+    The child runs in ``outer/a/b/cwd`` so a ``../..`` escape lands in ``outer/a``,
+    which is still inside this test's temporary directory.
+    """
+
+    def import_module_source(self, source):
+        outer = Path(self.enterContext(tempfile.TemporaryDirectory())).resolve()
+        pkg = outer / 'src'
+        cwd = outer / 'a' / 'b' / 'cwd'
+        home = outer / 'home'
+        for directory in (pkg, cwd, home):
+            directory.mkdir(parents=True)
+        (pkg / 'mutant.py').write_text(source, encoding='utf-8')
+        return outer, import_in_child(pkg, 'mutant', cwd, home)
+
+    def assert_blocked(self, result, leaked):
+        self.assertNotEqual(result.returncode, 0, f'escaping write was not caught:\n{result.stderr}')
+        self.assertIn('blocked', result.stderr)
+        self.assertFalse(leaked.exists(), f'{leaked} was created')
+
+    def test_relative_escape_mkdir_is_caught(self):
+        outer, result = self.import_module_source('from pathlib import Path\nPath("../../LEAK").mkdir()\n')
+        self.assert_blocked(result, outer / 'a' / 'LEAK')
+
+    def test_absolute_path_write_is_caught(self):
+        outer = Path(self.enterContext(tempfile.TemporaryDirectory())).resolve()
+        target = outer / 'LEAK.txt'
+        _, result = self.import_module_source(f'open({str(target)!r}, "w").write("x")\n')
+        self.assert_blocked(result, target)
+
+    def test_caught_even_if_the_module_swallows_the_error(self):
+        outer, result = self.import_module_source(
+            'import os\ntry:\n    os.makedirs("../../LEAK/x")\nexcept OSError:\n    pass\n'
+        )
+        self.assert_blocked(result, outer / 'a' / 'LEAK')
+
+    def test_reads_and_dev_null_writes_are_allowed(self):
+        _, result = self.import_module_source(
+            'import os, sys\nopen(sys.executable, "rb").read(16)\n'
+            'with open(os.devnull, "w") as f:\n    f.write("x")\n'
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == '__main__':
