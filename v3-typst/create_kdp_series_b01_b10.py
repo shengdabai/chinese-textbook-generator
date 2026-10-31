@@ -10,6 +10,7 @@ This script:
 
 from __future__ import annotations
 
+import functools
 import re
 import subprocess
 import sys
@@ -31,11 +32,19 @@ from filters.content_filter import ContentFilter  # type: ignore
 from parsers.md_parser import MarkdownParser  # type: ignore
 from renderers.typst_renderer import TypstRenderer  # type: ignore
 
-# Built by main(): the config and template paths are relative to the working directory.
-FILTER: ContentFilter
-PARSER: MarkdownParser
-RENDERER: TypstRenderer
-KDP_TEMPLATE: str
+
+@functools.cache
+def _pipeline() -> tuple[ContentFilter, MarkdownParser, TypstRenderer]:
+    """Build the filter, parser and renderer on first use, not at import time.
+
+    The config path is relative to the working directory, like every path here.
+    """
+    return ContentFilter(str(V3_DIR / "config" / "filter_rules.yaml")), MarkdownParser(), TypstRenderer()
+
+
+@functools.cache
+def _kdp_template() -> str:
+    return build_template()
 
 
 @dataclass(frozen=True)
@@ -192,9 +201,10 @@ def typst_escape_string(text: str) -> str:
 
 def md_to_body(md_path: Path) -> str:
     raw = md_path.read_text(encoding="utf-8")
-    result = FILTER.filter(raw)
-    nodes = PARSER.parse(result.text)
-    return RENDERER.render(nodes, annotate=False)
+    content_filter, parser, renderer = _pipeline()
+    result = content_filter.filter(raw)
+    nodes = parser.parse(result.text)
+    return renderer.render(nodes, annotate=False)
 
 
 def build_template() -> str:
@@ -529,17 +539,15 @@ def build_typst_source(meta: KdpBookMeta, md_path: Path) -> str:
         f'#let book-subtitle = "{typst_escape_string(meta.subtitle)}"\n'
         f'#let book-tagline = "{typst_escape_string(meta.tagline)}"\n'
         f'#let book-color = "{typst_escape_string(meta.color)}"\n\n'
-        f"{KDP_TEMPLATE}\n\n"
+        f"{_kdp_template()}\n\n"
         f"{body}\n"
     )
 
 
 def main() -> None:
-    global FILTER, PARSER, RENDERER, KDP_TEMPLATE
-    FILTER = ContentFilter(str(V3_DIR / "config" / "filter_rules.yaml"))
-    PARSER = MarkdownParser()
-    RENDERER = TypstRenderer()
-    KDP_TEMPLATE = build_template()
+    # Fail on a missing config or template before writing anything.
+    _pipeline()
+    _kdp_template()
 
     TARGET_ROOT.mkdir(parents=True, exist_ok=True)
 
