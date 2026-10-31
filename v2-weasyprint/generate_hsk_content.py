@@ -2728,14 +2728,19 @@ Given a topic, prepare and deliver a 3-minute presentation in Chinese.
 # MAIN
 # ============================================================
 
-print("=== HSK Prep Content Generator ===")
-print(f"Loaded vocabulary: {sum(len(v) for v in vocab.values())} words across {len(vocab)} levels")
+def main():
+    print("=== HSK Prep Content Generator ===")
+    print(f"Loaded vocabulary: {sum(len(v) for v in vocab.values())} words across {len(vocab)} levels")
 
-generate_hsk1()
-for lv in [2, 3, 4, 5, 6]:
-    generate_hsk_structure(lv)
-generate_hsk79()
+    generate_hsk1()
+    for lv in [2, 3, 4, 5, 6]:
+        generate_hsk_structure(lv)
+    generate_hsk79()
 
-print("\n=== Generation Complete ===")
-print("All 7 HSK prep guides created with markdown content.")
-print("Run: python3 generate_hsk_pdf.py to generate PDFs.")
+    print("\n=== Generation Complete ===")
+    print("All 7 HSK prep guides created with markdown content.")
+    print("Run: python3 generate_hsk_pdf.py to generate PDFs.")
+
+
+if __name__ == '__main__':
+    main()

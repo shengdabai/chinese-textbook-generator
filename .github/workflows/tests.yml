@@ -47,3 +47,7 @@ jobs:
       - name: v3-typst pytest
         working-directory: v3-typst
         run: python -m pytest -q
+
+      # Imports every script in a temp cwd/HOME and fails if anything is written.
+      - name: Import side-effect test (all scripts)
+        run: python -m unittest discover -s tests -p 'test_*.py' -v

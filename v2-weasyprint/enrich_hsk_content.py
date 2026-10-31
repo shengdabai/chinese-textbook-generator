@@ -7,14 +7,6 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
 
-# Load vocabulary
-vocab = {}
-for lv in [1, 2, 3, 4, 5, 6]:
-    fpath = BASE / f'hsk_vocab_{lv}.json'
-    if fpath.exists():
-        with open(fpath) as f:
-            vocab[lv] = json.load(f)
-
 def write_file(path, content):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as f:
@@ -36,13 +28,22 @@ def gen_vocab_table(words):
     return '\n'.join(lines)
 
 
-# ============================================================
-# HSK 2 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk2-prep'
+def main():
+    # Load vocabulary
+    vocab = {}
+    for lv in [1, 2, 3, 4, 5, 6]:
+        fpath = BASE / f'hsk_vocab_{lv}.json'
+        if fpath.exists():
+            with open(fpath) as f:
+                vocab[lv] = json.load(f)
 
-# Exam overview - detailed
-write_file(base / 'part0-exam-overview/03-prep-plan.md', """# HSK 2 Prep Plan — 8-Week Standard Schedule
+    # ============================================================
+    # HSK 2 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk2-prep'
+
+    # Exam overview - detailed
+    write_file(base / 'part0-exam-overview/03-prep-plan.md', """# HSK 2 Prep Plan — 8-Week Standard Schedule
 
 ## Weekly Breakdown
 
@@ -80,8 +81,8 @@ write_file(base / 'part0-exam-overview/03-prep-plan.md', """# HSK 2 Prep Plan �
 - 60 questions total, ~60 minutes
 """)
 
-# Enrich vocabulary with four-layer examples
-write_file(base / 'part1-vocabulary-grammar/01-weather-seasons.md', f"""# Weather & Seasons — 天气与季节
+    # Enrich vocabulary with four-layer examples
+    write_file(base / 'part1-vocabulary-grammar/01-weather-seasons.md', f"""# Weather & Seasons — 天气与季节
 
 ## Core Vocabulary
 
@@ -118,7 +119,7 @@ Match each weather description to the correct season:
 4. 暖和 (warm) → 春天 (spring)
 """)
 
-write_file(base / 'part1-vocabulary-grammar/02-shopping-prices.md', f"""# Shopping & Prices — 购物与价格
+    write_file(base / 'part1-vocabulary-grammar/02-shopping-prices.md', f"""# Shopping & Prices — 购物与价格
 
 ## Key Expressions
 
@@ -141,7 +142,7 @@ write_file(base / 'part1-vocabulary-grammar/02-shopping-prices.md', f"""# Shoppi
 {fl('B: 好吧，一百块。', 'B: Hǎo ba, yì bǎi kuài.', 'B: OK [suggestion], one hundred yuan.', 'B: OK, 100 yuan.')}
 """)
 
-write_file(base / 'part1-vocabulary-grammar/07-new-grammar.md', f"""# HSK 2 New Grammar Points
+    write_file(base / 'part1-vocabulary-grammar/07-new-grammar.md', f"""# HSK 2 New Grammar Points
 
 ## 1. 了 (le) — The Big One
 
@@ -187,8 +188,8 @@ write_file(base / 'part1-vocabulary-grammar/07-new-grammar.md', f"""# HSK 2 New 
 - 正在...呢 = in the middle of doing something
 """)
 
-# Enrich HSK 2 listening section
-write_file(base / 'part2-listening/04-listening-mock.md', """# Listening Mock Practice — HSK 2 Full Set
+    # Enrich HSK 2 listening section
+    write_file(base / 'part2-listening/04-listening-mock.md', """# Listening Mock Practice — HSK 2 Full Set
 
 ## Practice Listening Test (25 questions)
 
@@ -217,8 +218,8 @@ write_file(base / 'part2-listening/04-listening-mock.md', """# Listening Mock Pr
 16-七点, 17-看电影, 18-茶, 19-医生, 20-爬山
 """)
 
-# Enrich HSK 2 writing section
-write_file(base / 'part4-writing/01-task1-picture-sentence.md', f"""# Writing Task 1 — Picture to Sentence (Questions 51-55)
+    # Enrich HSK 2 writing section
+    write_file(base / 'part4-writing/01-task1-picture-sentence.md', f"""# Writing Task 1 — Picture to Sentence (Questions 51-55)
 
 ## Task Format
 Look at 5 pictures (A-E) and a word bank (F). Write a sentence for each picture using the given words.
@@ -248,15 +249,15 @@ Look at 5 pictures (A-E) and a word bank (F). Write a sentence for each picture 
 5. Picture of a sunny day → 晴天
 """)
 
-print("HSK 2 enrichment complete")
+    print("HSK 2 enrichment complete")
 
 
-# ============================================================
-# HSK 3 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk3-prep'
+    # ============================================================
+    # HSK 3 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk3-prep'
 
-write_file(base / 'part1-vocabulary-grammar/08-core-grammar.md', f"""# HSK 3 Core Grammar — The Complement System
+    write_file(base / 'part1-vocabulary-grammar/08-core-grammar.md', f"""# HSK 3 Core Grammar — The Complement System
 
 ## Result Complement (结果补语)
 
@@ -298,15 +299,15 @@ Common result complements:
 {fl('如果 下雨，我 就 不 去 了。', 'Rúguǒ xiàyǔ, wǒ jiù bú qù le.', 'If rain, I then not go [completed].', 'If it rains, I won\'t go.')}
 """)
 
-print("HSK 3 enrichment complete")
+    print("HSK 3 enrichment complete")
 
 
-# ============================================================
-# HSK 4 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk4-prep'
+    # ============================================================
+    # HSK 4 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk4-prep'
 
-write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 4 Core Grammar
+    write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 4 Core Grammar
 
 ## 把 (bǎ) Sentences — Object Disposal
 
@@ -337,15 +338,15 @@ Structure: Subject + 把 + Object + Verb + Result/Direction
 {fl('他 是 坐 飞机 去 的。', 'Tā shì zuò fēijī qù de.', 'He [emphatic] sit airplane go [marker].', 'He went by airplane.')}
 """)
 
-print("HSK 4 enrichment complete")
+    print("HSK 4 enrichment complete")
 
 
-# ============================================================
-# HSK 5 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk5-prep'
+    # ============================================================
+    # HSK 5 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk5-prep'
 
-write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 5 Core Grammar — Advanced Structures
+    write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 5 Core Grammar — Advanced Structures
 
 ## Formal Written Structures
 
@@ -362,15 +363,15 @@ write_file(base / 'part1-vocabulary-grammar/07-core-grammar.md', f"""# HSK 5 Cor
 {fl('他 不仅 没生气，反而 笑 了 起来。', "Tā bùjǐn méi shēngqì, fǎn'ér xiào le qǐlái.", 'He not-only not angry, on-the-contrary laugh [completed] up.', 'Not only was he not angry, on the contrary he started laughing.')}
 """)
 
-print("HSK 5 enrichment complete")
+    print("HSK 5 enrichment complete")
 
 
-# ============================================================
-# HSK 6 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk6-prep'
+    # ============================================================
+    # HSK 6 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk6-prep'
 
-write_file(base / 'part1-vocabulary-grammar/05-advanced-grammar.md', f"""# HSK 6 Advanced Grammar — Discourse & Rhetoric
+    write_file(base / 'part1-vocabulary-grammar/05-advanced-grammar.md', f"""# HSK 6 Advanced Grammar — Discourse & Rhetoric
 
 ## Advanced Discourse Connectors
 
@@ -385,16 +386,16 @@ write_file(base / 'part1-vocabulary-grammar/05-advanced-grammar.md', f"""# HSK 6
 {fl('虽然 他 说 的 那番 话，听起来 似乎 有 道理，然而 仔细 分析，却 经 不 起 推敲。', "Suīrán tā shuō de nàfān huà, tīng qǐlái sìhu yǒu dàolǐ, rán'ér zǐxǐ fēnxī, què jīng bu qǐ tuīqiāo.", 'Although he said [possessive] those words, listen up seemingly have reason, however carefully analyze, yet withstand not careful consideration.', 'Although what he said sounds reasonable, upon careful analysis, it does not withstand scrutiny.')}
 """)
 
-print("HSK 6 enrichment complete")
+    print("HSK 6 enrichment complete")
 
 
-# ============================================================
-# HSK 7-9 ENRICHMENT
-# ============================================================
-base = BASE / 'hsk79-prep'
+    # ============================================================
+    # HSK 7-9 ENRICHMENT
+    # ============================================================
+    base = BASE / 'hsk79-prep'
 
-# One exam three levels detail
-write_file(base / 'part0-exam-overview/05-one-exam-three-levels.md', """# One Exam, Three Levels (一卷三试) — Detailed Guide
+    # One exam three levels detail
+    write_file(base / 'part0-exam-overview/05-one-exam-three-levels.md', """# One Exam, Three Levels (一卷三试) — Detailed Guide
 
 ## How It Works
 
@@ -443,8 +444,8 @@ All candidates take the **same exam paper**. Your total score determines which l
 - Deliver sophisticated oral presentations
 """)
 
-# More translation practice
-write_file(base / 'part5-translation/03-translation-practice.md', f"""# Translation Practice — Mixed Exercises
+    # More translation practice
+    write_file(base / 'part5-translation/03-translation-practice.md', f"""# Translation Practice — Mixed Exercises
 
 ## CN → EN Practice
 
@@ -463,6 +464,9 @@ write_file(base / 'part5-translation/03-translation-practice.md', f"""# Translat
 **Translation:** "一带一路倡议促进了参与国之间的经济合作和文化交流。"
 """)
 
-print("HSK 7-9 enrichment complete")
+    print("HSK 7-9 enrichment complete")
 
-print("\n=== All Enrichments Complete ===")
+    print("\n=== All Enrichments Complete ===")
+
+if __name__ == '__main__':
+    main()

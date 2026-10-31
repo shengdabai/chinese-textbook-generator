@@ -8,7 +8,6 @@ from pathlib import Path
 BASE = Path(__file__).parent
 TEMPLATES = BASE / "templates"
 OUTPUT = BASE / "output"
-OUTPUT.mkdir(exist_ok=True)
 
 sys.path.insert(0, str(BASE))
 
@@ -239,6 +238,7 @@ def cmd_validate(args):
 
 
 def main():
+    OUTPUT.mkdir(exist_ok=True)
     parser = argparse.ArgumentParser(description="v3-typst 中文教学 PDF 生成器")
     sub = parser.add_subparsers(dest="cmd")
 

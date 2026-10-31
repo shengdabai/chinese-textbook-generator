@@ -21,15 +21,12 @@ from pathlib import Path
 try:
     from weasyprint import HTML
 except ImportError:
-    print("Error: weasyprint not installed. Run: pip install weasyprint")
-    sys.exit(1)
+    HTML = None  # main() reports the missing dependency
 
 BASE = Path(__file__).resolve().parent.parent
 OUTPUT = BASE / 'output'
-OUTPUT.mkdir(exist_ok=True)
 
 DEST = Path.home() / 'Desktop' / '中文教学' / '中文教材生成工具' / 'HSK考试指南'
-DEST.mkdir(parents=True, exist_ok=True)
 
 LEVELS = [
     ('HSK1-merged.md', 'HSK 1 备考完全指南',   'ZTurns_HSK1_Prep.pdf',  'HSK1',   '#1565C0'),
@@ -673,6 +670,12 @@ ol > li::marker {{ color: var(--accent); font-weight: bold; }}
 
 
 def main():
+    if HTML is None:
+        print("Error: weasyprint not installed. Run: pip install weasyprint")
+        sys.exit(1)
+    OUTPUT.mkdir(exist_ok=True)
+    DEST.mkdir(parents=True, exist_ok=True)
+
     for md_name, title, pdf_name, folder, color in LEVELS:
         src = OUTPUT / md_name
         if not src.exists():
