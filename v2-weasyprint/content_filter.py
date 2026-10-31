@@ -410,6 +410,11 @@ def load_config(config_path: Path | None = None) -> dict[str, Any]:
         config_path = Path(__file__).parent / "content_filter_config.yaml"
 
     if not config_path.exists():
+        warnings.warn(
+            f"Content filter config not found at {config_path}. "
+            "Using default policy settings.",
+            stacklevel=2,
+        )
         return copy.deepcopy(DEFAULT_CONFIG)
 
     try:
