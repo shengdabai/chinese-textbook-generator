@@ -1,7 +1,7 @@
 """Checks for the COMMON_TRANSLATIONS glossary in generate_hsk_content.py.
 
-The generator runs at import time, so these tests read the source with `ast`
-instead of importing it.
+These tests read the source with `ast` instead of importing it, so they do
+not depend on the generator's data files.
 
 Run: python3 -m pytest v2-weasyprint/test_hsk_translations.py
   or python3 -m unittest discover -s v2-weasyprint -p 'test_*.py'

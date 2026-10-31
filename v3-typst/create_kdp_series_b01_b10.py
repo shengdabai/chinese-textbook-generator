@@ -31,9 +31,11 @@ from filters.content_filter import ContentFilter  # type: ignore
 from parsers.md_parser import MarkdownParser  # type: ignore
 from renderers.typst_renderer import TypstRenderer  # type: ignore
 
-FILTER = ContentFilter(str(V3_DIR / "config" / "filter_rules.yaml"))
-PARSER = MarkdownParser()
-RENDERER = TypstRenderer()
+# Built by main(): the config and template paths are relative to the working directory.
+FILTER: ContentFilter
+PARSER: MarkdownParser
+RENDERER: TypstRenderer
+KDP_TEMPLATE: str
 
 
 @dataclass(frozen=True)
@@ -237,9 +239,6 @@ def build_template() -> str:
         '    For permissions or bulk licensing, contact: #link("mailto:tony@zturnsgo.com")[tony\\@zturnsgo.com]',
     )
     return template
-
-
-KDP_TEMPLATE = build_template()
 
 
 def compile_typ(typ_src: str, out_pdf: Path) -> None:
@@ -536,6 +535,12 @@ def build_typst_source(meta: KdpBookMeta, md_path: Path) -> str:
 
 
 def main() -> None:
+    global FILTER, PARSER, RENDERER, KDP_TEMPLATE
+    FILTER = ContentFilter(str(V3_DIR / "config" / "filter_rules.yaml"))
+    PARSER = MarkdownParser()
+    RENDERER = TypstRenderer()
+    KDP_TEMPLATE = build_template()
+
     TARGET_ROOT.mkdir(parents=True, exist_ok=True)
 
     plan_path = TARGET_ROOT / "KDP_Book01-10_选题与目录.md"

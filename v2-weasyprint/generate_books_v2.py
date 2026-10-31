@@ -24,7 +24,6 @@ from content_filter import ContentFilter
 # ─────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent  # v2-weasyprint root (scripts in 工具脚本/)
 OUTPUT_DIR = BASE_DIR / "output"
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 CONTENT_FILTER = ContentFilter(BASE_DIR / "content_filter_config.yaml")
 CONTENT_POLICY_CONFIG = CONTENT_FILTER.config
@@ -2116,6 +2115,7 @@ def build_book(book_key: str, meta: dict):
 # Main
 # ─────────────────────────────────────────────
 def main():
+    OUTPUT_DIR.mkdir(exist_ok=True)
     import time as _time
 
     requested = set(sys.argv[1:]) if len(sys.argv) > 1 else None

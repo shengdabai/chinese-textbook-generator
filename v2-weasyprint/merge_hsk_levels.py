@@ -9,11 +9,9 @@ BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
 # Generated content lives in v2-weasyprint root (e.g., hsk1-prep/)
 HSK_BASE = BASE
 OUTPUT_DIR = BASE / 'output'
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 # Destination: 中文教材 folder
 CHINESE_TEXTBOOK_DIR = Path.home() / 'Desktop' / '中文教学' / '中文教材'
-CHINESE_TEXTBOOK_DIR.mkdir(exist_ok=True)
 
 LEVELS = [
     ('HSK备考/hsk1-prep', 'HSK1'),
@@ -121,6 +119,9 @@ def generate_pdf_from_md(md_path, pdf_path):
 
 
 def main():
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    CHINESE_TEXTBOOK_DIR.mkdir(exist_ok=True)
+
     print("=== HSK Content Merger ===")
 
     for src_dir, label in LEVELS:

@@ -17,7 +17,6 @@ from fpdf.enums import Align
 # ─────────────────────────────────────────────
 BASE_DIR = Path(__file__).parent
 OUTPUT_DIR = BASE_DIR / "output"
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 # CJK font — try in order until one works
 FONT_CANDIDATES = [
@@ -997,6 +996,7 @@ def build_book_with_toc(book_key: str, meta: dict, font_path: str):
 # Main
 # ─────────────────────────────────────────────
 def main():
+    OUTPUT_DIR.mkdir(exist_ok=True)
     import time as _time
     font_path = find_cjk_font()
     print(f"Using font: {font_path}")
