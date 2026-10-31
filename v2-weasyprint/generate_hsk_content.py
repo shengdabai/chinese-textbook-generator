@@ -8,6 +8,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from hsk_paths import HSK_ROOT
+
 BASE = Path(__file__).resolve().parent.parent  # v2-weasyprint root
 
 # ── POS mapping: Chinese → English ──
@@ -852,7 +854,7 @@ This lets you see exactly how Chinese thinks — not just what it says."""
 # ============================================================
 
 def generate_hsk1():
-    base = BASE / 'HSK备考/hsk1-prep'
+    base = HSK_ROOT / 'hsk1-prep'
 
     # Exam overview
     write_file(base / 'part0-exam-overview/01-hsk-intro.md', """# HSK 1 备考完全指南
@@ -1933,7 +1935,7 @@ def generate_hsk_structure(level):
     """Generate structure files for HSK levels 2-6."""
     structure = EXAM_STRUCTURE[level]
     name_zh, name_en = LEVEL_NAMES[level]
-    base = BASE / f'HSK备考/hsk{level}-prep'
+    base = HSK_ROOT / f'hsk{level}-prep'
 
     # Exam overview
     write_file(base / 'part0-exam-overview/01-hsk-intro.md', f"""# HSK {level} 备考完全指南
@@ -2341,7 +2343,7 @@ English: "Although what he said sounds reasonable, upon careful analysis, it doe
 
 def generate_hsk79():
     """Generate HSK 7-9 prep guide content."""
-    base = BASE / 'HSK备考/hsk79-prep'
+    base = HSK_ROOT / 'hsk79-prep'
 
     # Cover
     write_file(base / 'part0-exam-overview/01-hsk79-intro.md', """# HSK 7-9 备考完全指南
